@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📻</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Radio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            background: #2a2a2a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            padding-top: env(safe-area-inset-top, 20px);
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        .radio-unit {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow:
+                0 10px 40px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            max-width: 650px;
+            width: 100%;
+            border: 2px solid #000;
+        }
+
+        /* ── Display area ── */
+        .display-area {
+            background: #ff8c00;
+            padding: 16px 20px 24px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow:
+                inset 0 4px 16px rgba(0,0,0,0.6),
+                inset 0 -2px 8px rgba(0,0,0,0.25),
+                inset 0 0 30px rgba(0,0,0,0.12),
+                0 0 20px rgba(255,140,0,0.4);
+            border: 2px solid #333;
+            position: relative;
+            overflow: hidden;
+            animation: display-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes display-glow {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50%       { filter: brightness(1.02) saturate(1.05); }
+        }
+
+        .connection-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #888;
+            flex-shrink: 0;
+        }
+
+        .indicator-dot.connected    { background: #00aa00; box-shadow: 0 0 6px #00aa00; }
+        .indicator-dot.disconnected { background: #aa0000; box-shadow: 0 0 6px #aa0000; }
+
+        .indicator-text {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #000;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .station-info {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #000;
+            text-align: left;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            opacity: 0.55;
+            text-transform: uppercase;
+            padding-bottom: 6px;
+        }
+
+        .station-display {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .station-display.scrolling { text-align: left; }
+        .station-display.scrolling span { display: inline-block; will-change: transform; }
+
+        .status-display {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #000;
+            text-align: center;
+            letter-spacing: 2px;
+            min-height: 16px;
+            opacity: 0.65;
+        }
+
+        .status-display.success { color: #000; opacity: 1; }
+        .status-display.error   { color: #8b0000; opacity: 1; font-size: 10px; letter-spacing: 3px; }
+        .status-display.pending { color: #000; opacity: 0.6; }
+
+        /* ── Controls ── */
+        .controls-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+
+        .control-button {
+            background: #252525;
+            border: 1px solid #444;
+            color: #999;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex: 1;
+            font-weight: bold;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .control-button:hover:not(:disabled) { background: #303030; }
+        .control-button:active:not(:disabled) { background: #1a1a1a; }
+        .control-button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .control-button.active-state {
+            border-color: #c88a00;
+            color: #ff8c00;
+            background: #2d2d2d;
+        }
+
+        .control-button.danger      { color: #ff5c5c; border-color: #663333; }
+        .control-button.danger:hover:not(:disabled) { background: #3a2020; }
+
+        /* ── Banks ── */
+        .section-label {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .banks-section { margin-bottom: 20px; }
+
+        .banks-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+
+        .banks-tabs::-webkit-scrollbar { display: none; }
+
+        .bank-tab {
+            background: #252525;
+            border: 1px solid #383838;
+            color: #666;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.15s;
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .bank-tab:hover  { background: #303030; }
+        .bank-tab:active { background: #1a1a1a; }
+
+        .bank-tab.active {
+            background: #2d2d2d;
+            border-color: #c88a00;
+            color: #ff8c00;
+        }
+
+        /* ── Stations ── */
+        .stations-section { margin-bottom: 20px; }
+
+        .stations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            max-height: 360px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .station-button {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 6px;
+            padding: 12px 14px;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.15s;
+            width: 100%;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .station-button:hover  { background: #222; border-color: #444; }
+        .station-button:active { background: #111; }
+
+        .station-button.active {
+            background: #2d2d2d;
+            border-color: #c88a00;
+        }
+
+        .station-num {
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            font-weight: bold;
+            color: #ff8c00;
+            min-width: 24px;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .station-button.active .station-num { color: #ffa520; }
+
+        .station-name {
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            font-size: 15px;
+            color: #ccc;
+            font-weight: 500;
+            line-height: 1.2;
+        }
+
+        .station-button.active .station-name { color: #fff; }
+
+        .no-stations {
+            color: #555;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading-message {
+            color: #666;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* ── Volume ── */
+        .volume-section { margin-bottom: 20px; }
+
+        .volume-control {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #333;
+        }
+
+        .volume-icon { color: #666; font-size: 20px; }
+
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #333;
+            outline: none;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ff8c00;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            border: 2px solid #000;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #ff8c00;
+            cursor: pointer;
+            border: 2px solid #000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+
+        .volume-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #ff8c00;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+        }
+
+        /* ── Branding ── */
+        .branding {
+            text-align: center;
+            color: #444;
+            font-size: 11px;
+            margin-top: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="radio-unit">
+
+        <div class="display-area">
+            <div class="connection-indicator">
+                <span class="indicator-dot" id="indicatorDot"></span>
+                <span class="indicator-text" id="indicatorText">LOADING...</span>
+            </div>
+            <div class="station-info" id="stationInfo">SELECT A STATION</div>
+            <div class="station-display" id="stationDisplay">READY</div>
+            <div class="status-display" id="statusDisplay"></div>
+        </div>
+
+        <div class="controls-row">
+            <button class="control-button" id="playBtn" onclick="resumePlay()" title="Play">▶</button>
+            <button class="control-button" id="pauseBtn" onclick="pauseStation()" title="Pause">❚❚</button>
+            <button class="control-button danger" id="stopBtn" onclick="stopStation()" title="Stop">■</button>
+        </div>
+
+        <div class="banks-section">
+            <div class="section-label">Banks</div>
+            <div class="banks-tabs" id="banksTabs">
+                <div class="loading-message">Loading...</div>
+            </div>
+        </div>
+
+        <div class="stations-section">
+            <div class="section-label">Stations</div>
+            <div class="stations-list" id="stationsList">
+                <div class="loading-message">Fetching station list...</div>
+            </div>
+        </div>
+
+        <div class="volume-section">
+            <div class="section-label">Volume</div>
+            <div class="volume-control">
+                <span class="volume-icon">&#128266;</span>
+                <input type="range" id="volumeSlider" min="0" max="100" value="80">
+                <span class="volume-value" id="volumeValue">80</span>
+            </div>
+        </div>
+
+        <div class="branding">Radio Player</div>
+
+    </div>
+
+    <!-- Hidden audio element; playsinline keeps iOS from going full-screen -->
+    <audio id="audioPlayer" preload="none" playsinline></audio>
+
+    <script>
+        // ── Config ───────────────────────────────────────────────────────────
+        const STATIONS_URL = 'https://raw.githubusercontent.com/jodazsa/radio-headless/refs/heads/main/config/stations.yaml';
+
+        // ── State ────────────────────────────────────────────────────────────
+        let banks = [];
+        let currentBankIdx = 0;
+        let currentStation = null; // { name, url }
+        let isPlaying = false;
+        let isPaused  = false;
+
+        // ── Audio element ────────────────────────────────────────────────────
+        const audio = document.getElementById('audioPlayer');
+        audio.volume = 0.8;
+
+        audio.addEventListener('playing', () => {
+            isPlaying = true;
+            isPaused  = false;
+            updateStatus('NOW PLAYING', 'success');
+            setIndicator('connected', 'CONNECTED');
+            updatePlayButtons();
+            if (currentStation) updateDisplay(currentStation.name.toUpperCase());
+        });
+
+        audio.addEventListener('waiting', () => {
+            if (isPlaying || isPaused === false) updateStatus('BUFFERING...', 'pending');
+        });
+
+        audio.addEventListener('stalled', () => {
+            updateStatus('STALLED', 'pending');
+        });
+
+        audio.addEventListener('error', () => {
+            updateStatus('STREAM ERROR', 'error');
+            setIndicator('disconnected', 'ERROR');
+            isPlaying = false;
+            updatePlayButtons();
+        });
+
+        audio.addEventListener('ended', () => {
+            // Live streams shouldn't end, but handle gracefully
+            isPlaying = false;
+            updatePlayButtons();
+            updateStatus('ENDED', 'normal');
+        });
+
+        // ── Volume ───────────────────────────────────────────────────────────
+        document.getElementById('volumeSlider').addEventListener('input', function () {
+            audio.volume = this.value / 100;
+            document.getElementById('volumeValue').textContent = this.value;
+        });
+
+        // ── YAML loading ─────────────────────────────────────────────────────
+
+        /**
+         * Minimal YAML parser for the specific stations.yaml structure.
+         * Avoids a CDN dependency while handling the exact format reliably.
+         */
+        function parseStationsYaml(text) {
+            const lines = text.split('\n');
+            const result = { banks: {} };
+            let currentBank = null;
+            let currentStation = null;
+            let inBanks = false;
+            let inStations = false;
+
+            for (let raw of lines) {
+                // Strip comment-only lines
+                const commentIdx = raw.indexOf('#');
+                const line = commentIdx !== -1 ? raw.slice(0, commentIdx) : raw;
+                if (!line.trim()) continue;
+
+                // Detect indentation level (spaces)
+                const indent = line.search(/\S/);
+                const content = line.trim();
+
+                if (indent === 0 && content === 'banks:') {
+                    inBanks = true;
+                    continue;
+                }
+
+                if (!inBanks) continue;
+
+                // Bank key: "  0:" or "  1:"
+                if (indent === 2) {
+                    const bankMatch = content.match(/^(\d+):$/);
+                    if (bankMatch) {
+                        currentBank = bankMatch[1];
+                        result.banks[currentBank] = { name: '', stations: {} };
+                        inStations = false;
+                        currentStation = null;
+                    }
+                    // Bank-level key-value
+                    const kvMatch = content.match(/^(\w+):\s*"?(.*?)"?\s*$/);
+                    if (kvMatch && currentBank !== null) {
+                        const [, key, value] = kvMatch;
+                        if (key === 'name') result.banks[currentBank].name = value;
+                        if (key === 'stations') inStations = true;
+                    }
+                    continue;
+                }
+
+                // "stations:" key at indent 4
+                if (indent === 4 && content === 'stations:') {
+                    inStations = true;
+                    continue;
+                }
+
+                // Station index key: "      0:"
+                if (indent === 6 && inStations) {
+                    const stMatch = content.match(/^(\d+):$/);
+                    if (stMatch) {
+                        currentStation = stMatch[1];
+                        result.banks[currentBank].stations[currentStation] = { name: '', type: '', url: '' };
+                    }
+                    continue;
+                }
+
+                // Station fields at indent 8
+                if (indent === 8 && currentStation !== null) {
+                    // Handle quoted and unquoted values
+                    const kvMatch = content.match(/^(\w+):\s*"?(.*?)"?\s*$/);
+                    if (kvMatch) {
+                        const [, key, value] = kvMatch;
+                        if (key === 'name') result.banks[currentBank].stations[currentStation].name = value;
+                        if (key === 'type') result.banks[currentBank].stations[currentStation].type = value;
+                        if (key === 'url')  result.banks[currentBank].stations[currentStation].url  = value;
+                    }
+                    continue;
+                }
+            }
+
+            return result;
+        }
+
+        async function loadStations() {
+            setIndicator('', 'LOADING...');
+            try {
+                const resp = await fetch(STATIONS_URL);
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                const text = await resp.text();
+                const data = parseStationsYaml(text);
+
+                banks = [];
+                const bankKeys = Object.keys(data.banks).sort((a, b) => Number(a) - Number(b));
+                for (const bk of bankKeys) {
+                    const bank = data.banks[bk];
+                    const streamStations = [];
+                    const stKeys = Object.keys(bank.stations).sort((a, b) => Number(a) - Number(b));
+                    for (const sk of stKeys) {
+                        const s = bank.stations[sk];
+                        if (s.type === 'stream' && s.url) {
+                            streamStations.push({ index: Number(sk), name: s.name, url: s.url });
+                        }
+                    }
+                    if (streamStations.length > 0) {
+                        banks.push({ index: Number(bk), name: bank.name, stations: streamStations });
+                    }
+                }
+
+                renderBankTabs();
+                selectBank(0);
+                setIndicator('', 'READY');
+            } catch (err) {
+                setIndicator('disconnected', 'LOAD ERROR');
+                document.getElementById('stationsList').innerHTML =
+                    '<div class="loading-message">Could not load stations.<br>' + err.message + '</div>';
+                document.getElementById('banksTabs').innerHTML = '';
+            }
+        }
+
+        // ── Rendering ────────────────────────────────────────────────────────
+
+        function renderBankTabs() {
+            const el = document.getElementById('banksTabs');
+            el.innerHTML = '';
+            banks.forEach((bank, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'bank-tab';
+                btn.textContent = bank.name;
+                btn.id = 'bank-tab-' + i;
+                btn.addEventListener('click', () => selectBank(i));
+                el.appendChild(btn);
+            });
+        }
+
+        function selectBank(idx) {
+            currentBankIdx = idx;
+            document.querySelectorAll('.bank-tab').forEach((btn, i) => {
+                btn.classList.toggle('active', i === idx);
+            });
+            const activeTab = document.getElementById('bank-tab-' + idx);
+            if (activeTab) activeTab.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            renderStations();
+        }
+
+        function renderStations() {
+            const bank = banks[currentBankIdx];
+            const listEl = document.getElementById('stationsList');
+            listEl.innerHTML = '';
+
+            if (!bank || bank.stations.length === 0) {
+                listEl.innerHTML = '<div class="no-stations">No stream stations</div>';
+                return;
+            }
+
+            bank.stations.forEach(station => {
+                const btn = document.createElement('button');
+                btn.className = 'station-button';
+                if (currentStation && currentStation.url === station.url) btn.classList.add('active');
+
+                const num = document.createElement('span');
+                num.className = 'station-num';
+                num.textContent = station.index + 1;
+
+                const name = document.createElement('span');
+                name.className = 'station-name';
+                name.textContent = station.name;
+
+                btn.appendChild(num);
+                btn.appendChild(name);
+                btn.addEventListener('click', () => playStation(station));
+                listEl.appendChild(btn);
+            });
+        }
+
+        // ── Playback ─────────────────────────────────────────────────────────
+
+        function playStation(station) {
+            const bank = banks[currentBankIdx];
+            currentStation = station;
+
+            // Update info row
+            document.getElementById('stationInfo').textContent =
+                (bank ? bank.name.toUpperCase() : '') + '  \u00b7  ' + station.name.toUpperCase();
+            updateDisplay(station.name.toUpperCase());
+            updateStatus('CONNECTING...', 'pending');
+            setIndicator('', 'CONNECTING');
+
+            // Re-render so active button is highlighted correctly
+            renderStations();
+
+            // Reset audio and load new source
+            audio.pause();
+            audio.src = station.url;
+            audio.load();
+
+            const promise = audio.play();
+            if (promise !== undefined) {
+                promise.catch(err => {
+                    // iOS may require an additional tap; show a helpful message
+                    updateStatus('TAP PLAY TO START', 'pending');
+                    setIndicator('', 'READY');
+                    console.warn('Playback promise rejected:', err);
+                });
+            }
+
+            setupMediaSession(station.name, bank ? bank.name : '');
+        }
+
+        function resumePlay() {
+            if (!currentStation) return;
+            if (isPaused) {
+                const promise = audio.play();
+                if (promise !== undefined) {
+                    promise.catch(err => {
+                        updateStatus('TAP PLAY TO START', 'pending');
+                    });
+                }
+            } else if (!isPlaying) {
+                playStation(currentStation);
+            }
+        }
+
+        function pauseStation() {
+            audio.pause();
+            isPlaying = false;
+            isPaused  = true;
+            updateDisplay('PAUSED');
+            updateStatus('', 'normal');
+            setIndicator('connected', 'PAUSED');
+            updatePlayButtons();
+        }
+
+        function stopStation() {
+            audio.pause();
+            audio.src = '';
+            isPlaying = false;
+            isPaused  = false;
+            updateDisplay('READY');
+            updateStatus('', 'normal');
+            setIndicator('', 'READY');
+            updatePlayButtons();
+        }
+
+        // ── Media Session API (lock-screen controls on iOS/Android) ──────────
+
+        function setupMediaSession(stationName, bankName) {
+            if (!('mediaSession' in navigator)) return;
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title:  stationName,
+                artist: bankName,
+                album:  'Radio'
+            });
+            navigator.mediaSession.setActionHandler('play',  () => resumePlay());
+            navigator.mediaSession.setActionHandler('pause', () => pauseStation());
+            navigator.mediaSession.setActionHandler('stop',  () => stopStation());
+        }
+
+        // ── UI helpers ───────────────────────────────────────────────────────
+
+        function setIndicator(state, text) {
+            const dot  = document.getElementById('indicatorDot');
+            const span = document.getElementById('indicatorText');
+            dot.className = 'indicator-dot' + (state ? ' ' + state : '');
+            span.textContent = text;
+        }
+
+        function updateStatus(msg, type) {
+            const el = document.getElementById('statusDisplay');
+            el.textContent = msg;
+            el.className = 'status-display' + (type ? ' ' + type : '');
+        }
+
+        function updatePlayButtons() {
+            document.getElementById('playBtn').classList.toggle('active-state',  isPlaying);
+            document.getElementById('pauseBtn').classList.toggle('active-state', isPaused);
+        }
+
+        // Scrolling display text (matches radio.html behaviour)
+        let scrollRunId    = 0;
+        let scrollFrame    = null;
+        let lastDisplayTxt = null;
+
+        function updateDisplay(text) {
+            if (text === lastDisplayTxt) return;
+            lastDisplayTxt = text;
+
+            const el = document.getElementById('stationDisplay');
+            scrollRunId++;
+            const thisRun = scrollRunId;
+            if (scrollFrame) { cancelAnimationFrame(scrollFrame); scrollFrame = null; }
+
+            if (text.length > 20) {
+                el.innerHTML = '<span>' + text + '</span>';
+                el.classList.add('scrolling');
+
+                requestAnimationFrame(() => {
+                    const span = el.querySelector('span');
+                    if (!span || thisRun !== scrollRunId) return;
+
+                    const dist = span.scrollWidth - el.clientWidth;
+                    if (dist <= 0) { el.classList.remove('scrolling'); el.textContent = text; return; }
+
+                    const pps = 68, pauseMs = 1000;
+                    const moveDur  = (dist / pps) * 1000;
+                    const cycleDur = moveDur + pauseMs;
+                    const start    = performance.now();
+
+                    function step(now) {
+                        if (thisRun !== scrollRunId) { scrollFrame = null; return; }
+                        const t = (now - start) % cycleDur;
+                        span.style.transform = t <= moveDur
+                            ? 'translateX(-' + (dist * (t / moveDur)) + 'px)'
+                            : 'translateX(-' + dist + 'px)';
+                        scrollFrame = requestAnimationFrame(step);
+                    }
+                    scrollFrame = requestAnimationFrame(step);
+                });
+            } else {
+                el.textContent = text;
+                el.classList.remove('scrolling');
+            }
+        }
+
+        // ── Boot ─────────────────────────────────────────────────────────────
+        loadStations();
+    </script>
+</body>
+</html>
