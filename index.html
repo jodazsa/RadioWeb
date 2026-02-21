@@ -294,62 +294,6 @@
             padding: 20px;
         }
 
-        /* ── Volume ── */
-        .volume-section { margin-bottom: 20px; }
-
-        .volume-control {
-            display: flex;
-            gap: 15px;
-            align-items: center;
-            background: #1a1a1a;
-            padding: 15px;
-            border-radius: 6px;
-            border: 2px solid #333;
-        }
-
-        .volume-icon { color: #666; font-size: 20px; }
-
-        input[type="range"] {
-            flex: 1;
-            height: 6px;
-            border-radius: 3px;
-            background: #333;
-            outline: none;
-            -webkit-appearance: none;
-            appearance: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #ff8c00;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-            border: 2px solid #000;
-        }
-
-        input[type="range"]::-moz-range-thumb {
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            background: #ff8c00;
-            cursor: pointer;
-            border: 2px solid #000;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
-        }
-
-        .volume-value {
-            min-width: 50px;
-            text-align: center;
-            font-weight: bold;
-            color: #ff8c00;
-            font-size: 18px;
-            font-family: 'Courier New', monospace;
-        }
-
         /* ── Branding ── */
         .branding {
             text-align: center;
@@ -394,15 +338,6 @@
             </div>
         </div>
 
-        <div class="volume-section">
-            <div class="section-label">Volume</div>
-            <div class="volume-control">
-                <span class="volume-icon">&#128266;</span>
-                <input type="range" id="volumeSlider" min="0" max="100" value="80">
-                <span class="volume-value" id="volumeValue">80</span>
-            </div>
-        </div>
-
         <div class="branding">Radio Player</div>
 
     </div>
@@ -423,7 +358,7 @@
 
         // ── Audio element ────────────────────────────────────────────────────
         const audio = document.getElementById('audioPlayer');
-        audio.volume = 0.8;
+        audio.volume = 1;
 
         audio.addEventListener('playing', () => {
             isPlaying = true;
@@ -456,12 +391,6 @@
             isPlaying = false;
             updatePlayButtons();
             updateStatus('ENDED', 'normal');
-        });
-
-        // ── Volume ───────────────────────────────────────────────────────────
-        document.getElementById('volumeSlider').addEventListener('input', function () {
-            audio.volume = this.value / 100;
-            document.getElementById('volumeValue').textContent = this.value;
         });
 
         // ── YAML loading ─────────────────────────────────────────────────────
