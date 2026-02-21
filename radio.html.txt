@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📻</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Radio Controller</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            background: #2a2a2a;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .radio-unit {
+            background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 
+                0 10px 40px rgba(0,0,0,0.8),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            max-width: 650px;
+            width: 100%;
+            border: 2px solid #000;
+        }
+        
+        .display-area {
+            background: #ff8c00;
+            padding: 16px 20px 24px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            box-shadow:
+                inset 0 4px 16px rgba(0,0,0,0.6),
+                inset 0 -2px 8px rgba(0,0,0,0.25),
+                inset 0 0 30px rgba(0,0,0,0.12),
+                0 0 20px rgba(255,140,0,0.4);
+            border: 2px solid #333;
+            position: relative;
+            overflow: hidden;
+            animation: display-glow 4s ease-in-out infinite;
+        }
+
+        @keyframes display-glow {
+            0%, 100% { filter: brightness(1) saturate(1); }
+            50% { filter: brightness(1.02) saturate(1.05); }
+        }
+        
+        .connection-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .indicator-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #888;
+        }
+
+        .indicator-dot.connected {
+            background: #00aa00;
+            box-shadow: 0 0 6px #00aa00;
+        }
+
+        .indicator-dot.disconnected {
+            background: #aa0000;
+            box-shadow: 0 0 6px #aa0000;
+        }
+
+        .indicator-text {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #000;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .indicator-dot.disconnected + .indicator-text {
+            color: #8b0000;
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .station-info {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #000;
+            text-align: left;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+            opacity: 0.55;
+            text-transform: uppercase;
+            padding-bottom: 6px;
+        }
+        
+        .station-display {
+            font-family: 'Courier New', monospace;
+            font-size: 32px;
+            font-weight: bold;
+            color: #000;
+            text-align: center;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            overflow: hidden;
+            white-space: nowrap;
+            position: relative;
+        }
+        
+        .station-display.scrolling {
+            text-align: left;
+        }
+        
+        .station-display.scrolling span {
+            display: inline-block;
+            will-change: transform;
+        }
+        
+        .status-display {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #000;
+            text-align: center;
+            letter-spacing: 2px;
+            min-height: 16px;
+            opacity: 0.65;
+        }
+
+        .status-display.error {
+            color: #8b0000;
+            font-size: 10px;
+            letter-spacing: 3px;
+        }
+        
+        .controls-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .control-button {
+            background: #252525;
+            border: 1px solid #444;
+            color: #999;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: all 0.15s;
+            flex: 1;
+            font-weight: bold;
+        }
+
+        .control-button:hover:not(:disabled) {
+            background: #303030;
+        }
+
+        .control-button:active:not(:disabled) {
+            background: #1a1a1a;
+        }
+        
+        .control-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .control-button.active-state {
+            border-color: #c88a00;
+            color: #ff8c00;
+            background: #2d2d2d;
+        }
+
+        .control-button.danger {
+            color: #ff5c5c;
+            border-color: #663333;
+        }
+
+        .control-button.danger:hover:not(:disabled) {
+            background: #3a2020;
+        }
+        
+        .tuner-section {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        
+        .tuner-group {
+            flex: 1;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #333;
+        }
+        
+        .tuner-label {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .tuner-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .tuner-display {
+            background: #0d0d0d;
+            color: #ff8c00;
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid #444;
+            letter-spacing: 3px;
+        }
+        
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 6px;
+        }
+        
+        .keypad-button {
+            background: #252525;
+            border: 1px solid #444;
+            color: #666;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.15s;
+            font-weight: bold;
+        }
+
+        .keypad-button:hover:not(:disabled) {
+            background: #303030;
+        }
+
+        .keypad-button:active:not(:disabled) {
+            background: #1a1a1a;
+        }
+
+        .keypad-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .keypad-button.active {
+            border-color: #c88a00;
+            color: #d4960a;
+            background: #2d2d2d;
+        }
+        
+        .keypad-button:nth-child(10) {
+            grid-column: 2;
+        }
+        
+        .play-button {
+            background: #ff8c00;
+            border: 1px solid #333;
+            color: #000;
+            padding: 20px 40px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .play-button:hover:not(:disabled) {
+            background: #ffa520;
+        }
+
+        .play-button:active:not(:disabled) {
+            background: #d97500;
+        }
+        
+        .play-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .favorites-section {
+            margin-bottom: 20px;
+        }
+        
+        .favorites-label {
+            color: #888;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .favorites-buttons {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+        
+        .favorite-button {
+            background: #252525;
+            border: 1px solid #383838;
+            color: #555;
+            padding: 12px 8px;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.15s;
+            position: relative;
+        }
+
+        .favorite-button:hover:not(:disabled) {
+            background: #303030;
+        }
+
+        .favorite-button:active:not(:disabled) {
+            background: #1a1a1a;
+        }
+
+        .favorite-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .favorite-button.saving {
+            background: #ff8c00;
+            color: #000;
+            animation: pulse 0.5s ease-in-out;
+        }
+
+        .favorite-button.has-preset {
+            border-color: #555;
+            color: #888;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .volume-section {
+            margin-bottom: 20px;
+        }
+
+        .directory-section {
+            margin-bottom: 10px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .directory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .directory-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .refresh-list-button {
+            background: #222;
+            border: 1px solid #444;
+            color: #999;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        .refresh-list-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .directory-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        .bank-directory-title {
+            color: #999;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .bank-station-list {
+            color: #ddd;
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+            list-style: none;
+        }
+
+        .bank-station-list li {
+            margin-bottom: 2px;
+        }
+
+        .directory-message {
+            color: #bbb;
+            font-size: 12px;
+            font-family: 'Roboto Condensed', Arial, sans-serif;
+        }
+
+        .source-section {
+            margin-top: 12px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .source-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .source-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .source-input {
+            flex: 1;
+            min-width: 260px;
+            background: #0d0d0d;
+            border: 1px solid #444;
+            color: #ddd;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            border-radius: 4px;
+            padding: 10px;
+        }
+
+        .source-submit {
+            background: #222;
+            border: 1px solid #444;
+            color: #999;
+            padding: 10px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+        }
+
+        .source-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .source-message {
+            margin-top: 8px;
+            color: #bbb;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+        .source-message.success { color: #4CAF50; }
+        .source-message.error { color: #ff5c5c; }
+
+        @media (max-width: 700px) {
+            .directory-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Admin panel */
+        .admin-toggle-row {
+            margin-top: 10px;
+        }
+
+        .admin-section {
+            margin-top: 10px;
+            background: #1a1a1a;
+            border: 2px solid #333;
+            border-radius: 6px;
+            padding: 15px;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .admin-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .admin-version {
+            color: #555;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .admin-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .admin-action-btn {
+            background: #222;
+            border: 1px solid #444;
+            color: #999;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            min-width: 150px;
+        }
+
+        .admin-action-btn:hover:not(:disabled) {
+            background: #303030;
+        }
+
+        .admin-action-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .admin-action-btn.danger {
+            color: #ff5c5c;
+            border-color: #663333;
+        }
+
+        .admin-action-btn.danger:hover:not(:disabled) {
+            background: #3a2020;
+        }
+
+        .admin-desc {
+            color: #777;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .admin-log {
+            background: #0d0d0d;
+            border: 1px solid #444;
+            border-radius: 4px;
+            padding: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #aaa;
+            white-space: pre-wrap;
+            max-height: 220px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        .admin-divider {
+            border: none;
+            border-top: 1px solid #333;
+            margin: 12px 0;
+        }
+
+        .admin-message {
+            margin-top: 6px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            color: #bbb;
+        }
+
+        .admin-message.success { color: #4CAF50; }
+        .admin-message.error   { color: #ff5c5c; }
+
+        .volume-label {
+            color: #888;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .volume-control {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 6px;
+            border: 2px solid #333;
+        }
+        
+        .volume-icon {
+            color: #666;
+            font-size: 20px;
+        }
+        
+        input[type="range"] {
+            flex: 1;
+            height: 6px;
+            border-radius: 3px;
+            background: #333;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ff8c00;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+            border: 2px solid #000;
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ff8c00;
+            cursor: pointer;
+            border: 2px solid #000;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+        }
+        
+        .volume-value {
+            min-width: 50px;
+            text-align: center;
+            font-weight: bold;
+            color: #ff8c00;
+            font-size: 18px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .branding {
+            text-align: center;
+            color: #666;
+            font-size: 11px;
+            margin-top: 20px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .control-button.btn-sm {
+            padding: 10px 15px;
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .success { color: #000; }
+        .error { color: #8b0000; }
+        .pending { color: #000; opacity: 0.6; }
+    </style>
+</head>
+<body>
+    <div class="radio-unit">
+        <div class="display-area">
+            <div class="connection-indicator" id="connectionIndicator">
+                <span class="indicator-dot"></span>
+                <span class="indicator-text">CONNECTING...</span>
+            </div>
+            <div class="station-info" id="stationInfo">BNK 1  ·  STN 1</div>
+            <div class="station-display" id="stationDisplay">READY</div>
+            <div class="status-display" id="status"></div>
+        </div>
+        
+        <div class="controls-row">
+            <button class="control-button" id="playBtn" onclick="sendCommand('mpc play')" title="Play">▶</button>
+            <button class="control-button" id="pauseBtn" onclick="sendCommand('mpc pause')" title="Pause">❚❚</button>
+        </div>
+        
+        <div class="tuner-section">
+            <div class="tuner-group">
+                <div class="tuner-label">Banks</div>
+                <div class="keypad">
+                    <button class="keypad-button" onclick="setBank(1)">1</button>
+                    <button class="keypad-button" onclick="setBank(2)">2</button>
+                    <button class="keypad-button" onclick="setBank(3)">3</button>
+                    <button class="keypad-button" onclick="setBank(4)">4</button>
+                    <button class="keypad-button" onclick="setBank(5)">5</button>
+                    <button class="keypad-button" onclick="setBank(6)">6</button>
+                    <button class="keypad-button" onclick="setBank(7)">7</button>
+                    <button class="keypad-button" onclick="setBank(8)">8</button>
+                    <button class="keypad-button" onclick="setBank(9)">9</button>
+                    <button class="keypad-button" onclick="setBank(10)">10</button>
+                </div>
+            </div>
+            
+            <div class="tuner-group">
+                <div class="tuner-label">Stations</div>
+                <div class="keypad">
+                    <button class="keypad-button" onclick="setStation(1)">1</button>
+                    <button class="keypad-button" onclick="setStation(2)">2</button>
+                    <button class="keypad-button" onclick="setStation(3)">3</button>
+                    <button class="keypad-button" onclick="setStation(4)">4</button>
+                    <button class="keypad-button" onclick="setStation(5)">5</button>
+                    <button class="keypad-button" onclick="setStation(6)">6</button>
+                    <button class="keypad-button" onclick="setStation(7)">7</button>
+                    <button class="keypad-button" onclick="setStation(8)">8</button>
+                    <button class="keypad-button" onclick="setStation(9)">9</button>
+                    <button class="keypad-button" onclick="setStation(10)">10</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="favorites-section">
+            <div class="favorites-label">Favorites (Hold to Save)</div>
+            <div class="favorites-buttons">
+                <button class="favorite-button" data-slot="1">1</button>
+                <button class="favorite-button" data-slot="2">2</button>
+                <button class="favorite-button" data-slot="3">3</button>
+                <button class="favorite-button" data-slot="4">4</button>
+                <button class="favorite-button" data-slot="5">5</button>
+                <button class="favorite-button" data-slot="6">6</button>
+            </div>
+        </div>
+        
+        <div class="volume-section">
+            <div class="volume-label">Volume</div>
+            <div class="volume-control">
+                <input type="range" id="volumeSlider" min="0" max="100" value="0" disabled>
+                <span class="volume-value" id="volumeValue">--</span>
+            </div>
+        </div>
+
+        <div class="directory-section">
+            <div class="directory-header">
+                <div class="directory-label">Station Directory</div>
+                <button class="refresh-list-button" id="refreshDirectoryBtn" onclick="refreshStationDirectory()">Refresh List</button>
+            </div>
+            <div class="directory-message" id="directoryMessage">Loading station directory...</div>
+            <div class="directory-grid" id="stationDirectory"></div>
+        </div>
+
+        <!-- Admin toggle -->
+        <div class="controls-row admin-toggle-row">
+            <button class="control-button btn-sm" id="adminToggleBtn" onclick="toggleAdminPanel()">Admin</button>
+        </div>
+
+        <!-- Admin panel -->
+        <div id="adminPanel" style="display:none;">
+            <div class="admin-section">
+                <div class="admin-header">
+                    <div class="admin-label">System Administration</div>
+                    <div class="admin-version" id="adminVersion">Loading version...</div>
+                </div>
+
+                <!-- Update from GitHub -->
+                <div class="admin-row">
+                    <button class="admin-action-btn" id="updateBtn" onclick="startUpdate()">Update Software</button>
+                    <span class="admin-desc">git pull + deploy-rotary.sh</span>
+                </div>
+                <div id="updateLog" class="admin-log" style="display:none;"></div>
+
+                <hr class="admin-divider">
+
+                <!-- Restart service -->
+                <div class="admin-row">
+                    <button class="admin-action-btn" id="restartBtn" onclick="requestRestartService()">Restart Service</button>
+                    <span class="admin-desc">Restart the radio web backend</span>
+                </div>
+
+                <!-- Reboot Radio -->
+                <div class="admin-row">
+                    <button class="admin-action-btn danger" id="rebootBtn" onclick="requestReboot()">Reboot Radio</button>
+                    <span class="admin-desc">Full radio reboot (~1 min)</span>
+                </div>
+
+                <div class="admin-row">
+                    <button class="admin-action-btn danger" id="shutdownBtn" onclick="requestShutdown()">Power down</button>
+                    <span class="admin-desc">Shut down safely (requires unplug/replug to power back on)</span>
+                </div>
+
+                <div class="admin-row">
+                    <button class="admin-action-btn" id="refreshPageBtn" onclick="refreshPageNow()">Refresh page</button>
+                    <span class="admin-desc">Reload this web interface</span>
+                </div>
+
+                <hr class="admin-divider">
+
+                <!-- View logs -->
+                <div class="admin-row">
+                    <button class="admin-action-btn" id="logsBtn" onclick="fetchServiceLogs()">View Logs</button>
+                    <span class="admin-desc">Recent service journal output</span>
+                </div>
+                <div id="serviceLogs" class="admin-log" style="display:none;"></div>
+
+                <hr class="admin-divider">
+
+                <!-- Change stations source -->
+                <div class="source-label">Change Stations Source</div>
+                <div class="source-controls">
+                    <input type="text" class="source-input" id="stationsSourceInput" placeholder="https://raw.githubusercontent.com/.../stations.yaml">
+                    <button class="source-submit" id="stationsSourceSubmit" onclick="submitStationsSource()">Submit</button>
+                </div>
+                <div class="source-message" id="stationsSourceMessage">Loading current source...</div>
+
+                <div class="admin-row">
+                    <button class="admin-action-btn" id="toggleAutoUpdateBtn" onclick="toggleStationsAutoUpdate()">Disable Auto-Update</button>
+                    <span class="admin-desc" id="autoUpdateStatusText">Stations auto-update at 4 AM</span>
+                </div>
+
+
+                <div class="admin-message" id="adminMessage"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const BACKEND_URL = (window.location.protocol === 'file:')
+            ? 'http://localhost:8080'
+            : window.location.origin;
+        // Note: this backend does not require a per-request host field.
+        let volumeDebounceTimer = null;
+        let hasSyncedVolume = false;
+        let isCommandPending = false;
+        let statusUpdateInterval = null;
+        
+        // Current selection
+        let currentBank = 1;
+        let currentStation = 1;
+        let currentBankName = '';
+        let currentStationName = '';
+        
+        // Favorites storage (localStorage)
+        let favorites = {};
+        let holdTimer = null;
+        let holdSlot = null;
+        
+        // Tuner change debouncing
+        let tunerDebounceTimer = null;
+        let stationScrollFrame = null;
+        let stationScrollRunId = 0;
+        let currentDisplayText = null;
+        
+        // Config is not needed for the '(1)' backend
+        function fetchConfig() { /* no-op */ }
+
+        function fetchStationDirectory() {
+            const messageElement = document.getElementById('directoryMessage');
+            messageElement.textContent = 'Loading station directory...';
+
+            fetch(`${BACKEND_URL}/stations`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success || !Array.isArray(data.banks)) {
+                        throw new Error(data.error || 'Invalid station list response');
+                    }
+
+                    renderStationDirectory(data.banks);
+                    messageElement.textContent = `Updated: ${new Date().toLocaleTimeString()}`;
+                })
+                .catch(err => {
+                    const directoryElement = document.getElementById('stationDirectory');
+                    directoryElement.innerHTML = '';
+                    messageElement.textContent = `Unable to load directory: ${err.message}`;
+                });
+        }
+
+        function refreshStationDirectory() {
+            const refreshBtn = document.getElementById('refreshDirectoryBtn');
+            const messageElement = document.getElementById('directoryMessage');
+
+            refreshBtn.disabled = true;
+            messageElement.textContent = 'Refreshing stations from source...';
+
+            fetch(`${BACKEND_URL}/stations/refresh`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Could not refresh stations');
+                    }
+
+                    messageElement.textContent = data.message || 'Stations refreshed';
+                    fetchStationDirectory();
+                })
+                .catch(err => {
+                    messageElement.textContent = `Unable to refresh stations: ${err.message}`;
+                })
+                .finally(() => {
+                    refreshBtn.disabled = false;
+                });
+        }
+
+        function renderStationDirectory(banks) {
+            const directoryElement = document.getElementById('stationDirectory');
+            directoryElement.innerHTML = '';
+
+            banks.forEach(bank => {
+                const column = document.createElement('div');
+
+                const title = document.createElement('div');
+                title.className = 'bank-directory-title';
+                title.textContent = `Bank ${bank.bank}: ${bank.name}`;
+                column.appendChild(title);
+
+                const list = document.createElement('ul');
+                list.className = 'bank-station-list';
+
+                if (Array.isArray(bank.stations) && bank.stations.length > 0) {
+                    bank.stations.forEach(station => {
+                        const item = document.createElement('li');
+                        item.textContent = `${station.station} - ${station.name}`;
+                        list.appendChild(item);
+                    });
+                } else {
+                    const item = document.createElement('li');
+                    item.textContent = 'No stations configured';
+                    list.appendChild(item);
+                }
+
+                column.appendChild(list);
+                directoryElement.appendChild(column);
+            });
+        }
+
+        function loadStationsSource() {
+            const input = document.getElementById('stationsSourceInput');
+            const message = document.getElementById('stationsSourceMessage');
+
+            message.textContent = 'Loading current source...';
+
+            fetch(`${BACKEND_URL}/stations/source`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Could not load stations source');
+                    }
+
+                    input.value = data.github_url || '';
+                    stationsAutoUpdateEnabled = data.auto_update_enabled !== false;
+                    updateAutoUpdateControls();
+                    if (!stationsAutoUpdateEnabled) {
+                        message.textContent = 'Auto-update is disabled \u2014 stations won\'t refresh automatically at 4 AM';
+                    } else {
+                        message.textContent = 'Current source loaded';
+                    }
+                })
+                .catch(err => {
+                    message.textContent = `Unable to load current source: ${err.message}`;
+                });
+        }
+
+        function updateAutoUpdateControls() {
+            const toggleBtn = document.getElementById('toggleAutoUpdateBtn');
+            const statusText = document.getElementById('autoUpdateStatusText');
+            if (!toggleBtn || !statusText) return;
+
+            toggleBtn.textContent = stationsAutoUpdateEnabled ? 'Disable Auto-Update' : 'Enable Auto-Update';
+            statusText.textContent = stationsAutoUpdateEnabled
+                ? 'Stations auto-update at 4 AM'
+                : 'Stations auto-update is OFF';
+        }
+
+        function toggleStationsAutoUpdate() {
+            const toggleBtn = document.getElementById('toggleAutoUpdateBtn');
+            const nextValue = !stationsAutoUpdateEnabled;
+
+            toggleBtn.disabled = true;
+
+            fetch(`${BACKEND_URL}/stations/auto-update`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ enabled: nextValue }),
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) {
+                    throw new Error(data.error || 'Could not update auto-update setting');
+                }
+
+                stationsAutoUpdateEnabled = data.auto_update_enabled !== false;
+                updateAutoUpdateControls();
+
+                const message = document.getElementById('stationsSourceMessage');
+                if (!stationsAutoUpdateEnabled) {
+                    message.textContent = 'Auto-update is disabled — stations won\'t refresh automatically at 4 AM';
+                } else {
+                    message.textContent = 'Auto-update enabled — stations will refresh automatically at 4 AM';
+                }
+            })
+            .catch(err => {
+                showAdminMessage('Could not update auto-update setting: ' + err.message, false);
+            })
+            .finally(() => {
+                toggleBtn.disabled = false;
+            });
+        }
+
+        function submitStationsSource() {
+            const input = document.getElementById('stationsSourceInput');
+            const submitButton = document.getElementById('stationsSourceSubmit');
+            const message = document.getElementById('stationsSourceMessage');
+            const githubUrl = input.value.trim();
+
+            if (!githubUrl) {
+                message.textContent = 'Please enter a source URL';
+                message.className = 'source-message error';
+                return;
+            }
+
+            submitButton.disabled = true;
+            message.textContent = 'Saving URL and fetching stations...';
+            message.className = 'source-message';
+
+            fetch(`${BACKEND_URL}/stations/source`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({github_url: githubUrl})
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        throw new Error(data.error || 'Could not save stations source');
+                    }
+
+                    input.value = data.github_url || githubUrl;
+
+                    if (data.stations_updated) {
+                        message.textContent = data.message || 'Stations updated successfully';
+                        message.className = 'source-message success';
+                        fetchStationDirectory();
+                    } else if (data.fetch_error) {
+                        message.textContent = (data.message || 'URL saved but fetch failed') + ': ' + data.fetch_error;
+                        message.className = 'source-message error';
+                    } else {
+                        message.textContent = data.message || 'Source saved, stations already up to date';
+                        message.className = 'source-message';
+                    }
+                })
+                .catch(err => {
+                    message.textContent = `Unable to save source: ${err.message}`;
+                    message.className = 'source-message error';
+                })
+                .finally(() => {
+                    submitButton.disabled = false;
+                });
+        }
+
+        function debouncedPlayStation() {
+            if (tunerDebounceTimer) {
+                clearTimeout(tunerDebounceTimer);
+            }
+            
+            // Update display immediately
+            updateStationInfo();
+            
+            // Wait 300ms after last change before sending command
+            tunerDebounceTimer = setTimeout(() => {
+                playCurrentStation();
+            }, 300);
+        }
+        
+        // Load favorites from localStorage
+        function loadFavorites() {
+            const saved = localStorage.getItem('radioFavorites');
+            if (saved) {
+                favorites = JSON.parse(saved);
+                updateFavoriteButtons();
+            }
+        }
+        
+        // Save favorites to localStorage
+        function saveFavoritesToStorage() {
+            localStorage.setItem('radioFavorites', JSON.stringify(favorites));
+        }
+        
+        // Update visual state of favorite buttons
+        function updateFavoriteButtons() {
+            document.querySelectorAll('.favorite-button').forEach(btn => {
+                const slot = btn.getAttribute('data-slot');
+                if (favorites[slot]) {
+                    btn.classList.add('has-preset');
+                    // Show bank-station on button
+                    btn.textContent = `${favorites[slot].bank}-${favorites[slot].station}`;
+                } else {
+                    btn.classList.remove('has-preset');
+                    // Show just the slot number
+                    btn.textContent = slot;
+                }
+            });
+        }
+        
+        // Initialize favorite button handlers
+        document.querySelectorAll('.favorite-button').forEach(btn => {
+            const slot = btn.getAttribute('data-slot');
+            
+            // Mouse/touch down - start hold timer
+            btn.addEventListener('mousedown', () => startHold(slot, btn));
+            btn.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                startHold(slot, btn);
+            });
+            
+            // Mouse/touch up - cancel hold or trigger recall
+            btn.addEventListener('mouseup', () => endHold(slot));
+            btn.addEventListener('touchend', () => endHold(slot));
+            btn.addEventListener('mouseleave', () => cancelHold());
+        });
+        
+        function startHold(slot, btn) {
+            holdSlot = slot;
+            holdTimer = setTimeout(() => {
+                // Held long enough - save favorite
+                saveFavorite(slot);
+                btn.classList.add('saving');
+                setTimeout(() => btn.classList.remove('saving'), 500);
+                
+                // Clear hold state so endHold doesn't trigger recall
+                holdTimer = null;
+                holdSlot = null;
+            }, 2000); // Hold for 2 seconds
+        }
+        
+        function endHold(slot) {
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                // Short press - recall favorite (only if we didn't just save)
+                if (holdSlot === slot) {
+                    recallFavorite(slot);
+                }
+                holdTimer = null;
+                holdSlot = null;
+            }
+        }
+        
+        function cancelHold() {
+            if (holdTimer) {
+                clearTimeout(holdTimer);
+                holdTimer = null;
+                holdSlot = null;
+            }
+        }
+        
+        function saveFavorite(slot) {
+            favorites[slot] = {
+                bank: currentBank,
+                station: currentStation
+            };
+            saveFavoritesToStorage();
+            updateFavoriteButtons();
+            
+            // Show brief confirmation in status
+            const oldStatus = document.getElementById('status').textContent;
+            updateStatus(`SAVED TO ${slot}`, 'success');
+            setTimeout(() => {
+                updateStatus(oldStatus, 'normal');
+            }, 2000);
+        }
+        
+        function recallFavorite(slot) {
+            if (favorites[slot]) {
+                const fav = favorites[slot];
+                currentBank = fav.bank;
+                currentStation = fav.station;
+                
+                // Auto-play the favorite
+                playCurrentStation();
+            }
+        }
+        
+        // Volume slider with debouncing
+        const volumeSlider = document.getElementById('volumeSlider');
+        const volumeValue = document.getElementById('volumeValue');
+        
+        volumeSlider.addEventListener('input', function(e) {
+            volumeValue.textContent = e.target.value;
+
+            if (!hasSyncedVolume) {
+                return;
+            }
+            
+            if (volumeDebounceTimer) {
+                clearTimeout(volumeDebounceTimer);
+            }
+            
+            volumeDebounceTimer = setTimeout(() => {
+                sendCommand(`mpc volume ${e.target.value}`);
+            }, 500);
+        });
+
+        function setBank(bank) {
+            currentBank = bank;
+            currentBankName = '';
+            currentStationName = '';
+            updateKeypadHighlights();
+            debouncedPlayStation();
+        }
+        
+        function setStation(station) {
+            currentStation = station;
+            currentBankName = '';
+            currentStationName = '';
+            updateKeypadHighlights();
+            debouncedPlayStation();
+        }
+        
+        function updateKeypadHighlights() {
+            // Update bank keypad
+            const bankKeypad = document.querySelectorAll('.tuner-group:nth-child(1) .keypad-button');
+            bankKeypad.forEach((btn, index) => {
+                const buttonValue = index < 9 ? index + 1 : 10; // 1-9, then 0 (which is 10)
+                if (buttonValue === currentBank) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+            
+            // Update station keypad
+            const stationKeypad = document.querySelectorAll('.tuner-group:nth-child(2) .keypad-button');
+            stationKeypad.forEach((btn, index) => {
+                const buttonValue = index < 9 ? index + 1 : 10; // 1-9, then 0 (which is 10)
+                if (buttonValue === currentStation) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+        
+        function updateStationInfo() {
+            const bankLabel = currentBankName || `${currentBank}`;
+            const stationLabel = currentStationName || `${currentStation}`;
+            document.getElementById('stationInfo').textContent = `BNK ${bankLabel}  \u00b7  STN ${stationLabel}`;
+        }
+        
+        function playCurrentStation() {
+            // Convert display numbers (1-10) to actual numbers (0-9) for the command
+            playRadio(currentBank - 1, currentStation - 1);
+        }
+        
+        function playRadio(bank, station) {
+            //bank and station here are 0-9 (actual values)
+            // Update internal state to show 1-10
+            currentBank = bank + 1;
+            currentStation = station + 1;
+            currentBankName = '';
+            currentStationName = '';
+            updateStationInfo();
+            updateKeypadHighlights();
+            sendCommand(`radio-play ${bank} ${station}`);
+            setTimeout(fetchRadioState, 350);
+        }
+        
+        function updateStationDisplay(text) {
+            // Skip if the text hasn't changed — avoids restarting the scroll animation
+            if (text === currentDisplayText) {
+                return;
+            }
+
+            const displayElement = document.getElementById('stationDisplay');
+
+            stationScrollRunId += 1;
+            const thisRunId = stationScrollRunId;
+
+            if (stationScrollFrame) {
+                cancelAnimationFrame(stationScrollFrame);
+                stationScrollFrame = null;
+            }
+            currentDisplayText = text;
+
+
+            // Check if text is longer than ~20 characters (needs scrolling)
+            if (text.length > 20) {
+                displayElement.innerHTML = `<span>${text}</span>`;
+                displayElement.classList.add('scrolling');
+
+                requestAnimationFrame(() => {
+                    const textElement = displayElement.querySelector('span');
+                    if (!textElement) return;
+
+                    const scrollDistance = textElement.scrollWidth - displayElement.clientWidth;
+                    if (scrollDistance <= 0) {
+                        displayElement.classList.remove('scrolling');
+                        displayElement.textContent = text;
+                        return;
+                    }
+
+                    const pixelsPerSecond = 68;
+                    const pauseDurationMs = 1000;
+                    const moveDurationMs = (scrollDistance / pixelsPerSecond) * 1000;
+                    const cycleDurationMs = moveDurationMs + pauseDurationMs;
+                    const moveEndMs = moveDurationMs;
+
+                    const startTimeMs = performance.now();
+
+                    function runScroll(nowMs) {
+                        if (thisRunId !== stationScrollRunId) {
+                            stationScrollFrame = null;
+                            return;
+                        }
+
+                        const elapsedInCycle = (nowMs - startTimeMs) % cycleDurationMs;
+                        if (elapsedInCycle <= moveEndMs) {
+                            const progress = elapsedInCycle / moveDurationMs;
+                            textElement.style.transform = `translateX(-${scrollDistance * progress}px)`;
+                        } else {
+                            textElement.style.transform = `translateX(-${scrollDistance}px)`;
+                        }
+
+                        stationScrollFrame = requestAnimationFrame(runScroll);
+                    }
+
+                    stationScrollFrame = requestAnimationFrame(runScroll);
+                });
+            } else {
+                displayElement.textContent = text;
+                displayElement.classList.remove('scrolling');
+            }
+        }
+        
+        function updateStatus(message, type = 'normal') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = 'status-display ' + type;
+        }
+        
+        function setButtonsDisabled(disabled) {
+            const buttons = document.querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = disabled);
+        }
+        
+        function updateConnectionIndicator(connected, message) {
+            const indicator = document.getElementById('connectionIndicator');
+            const dot = indicator.querySelector('.indicator-dot');
+            const text = indicator.querySelector('.indicator-text');
+            
+            dot.className = 'indicator-dot ' + (connected ? 'connected' : 'disconnected');
+            text.textContent = message || (connected ? 'CONNECTED' : 'DISCONNECTED');
+        }
+
+        function updatePlaybackButtonHighlights(isPlaying, isPaused) {
+            const playBtn = document.getElementById('playBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+
+            playBtn.classList.toggle('active-state', Boolean(isPlaying));
+            pauseBtn.classList.toggle('active-state', Boolean(isPaused));
+        }
+        
+        function fetchRadioState() {
+            fetch(`${BACKEND_URL}/state`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // State file uses 0-9, UI uses 1-10
+                    currentBank = data.bank + 1;
+                    currentStation = data.station + 1;
+                    currentBankName = data.bank_name || '';
+                    currentStationName = data.station_name || '';
+                    updateStationInfo();
+                    updateKeypadHighlights();
+                }
+            })
+            .catch(err => console.log('Could not fetch radio state:', err));
+        }
+        
+        function fetchCurrentStatus() {
+            fetch(`${BACKEND_URL}/status`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateConnectionIndicator(true, 'CONNECTED');
+                    
+                    // Update volume slider if we got volume data
+                    if (data.volume !== undefined) {
+                        document.getElementById('volumeSlider').value = data.volume;
+                        document.getElementById('volumeValue').textContent = data.volume;
+                        document.getElementById('volumeSlider').disabled = false;
+                        hasSyncedVolume = true;
+                    }
+                    
+                    if (data.is_playing && data.current_track) {
+                        // Show full text with scrolling if needed
+                        updateStationDisplay(data.current_track);
+                        updateStatus('NOW PLAYING', 'success');
+                    } else if (data.is_paused) {
+                        updateStationDisplay('PAUSED');
+                        updateStatus('', 'normal');
+                    } else if (!data.current_track) {
+                        updateStationDisplay('READY');
+                        updateStatus('', 'normal');
+                    }
+
+                    updatePlaybackButtonHighlights(data.is_playing, data.is_paused);
+                } else {
+                    updateConnectionIndicator(false, data.error_type === 'timeout' ? 'TIMEOUT' : 'ERROR');
+                }
+            })
+            .catch(err => {
+                updateConnectionIndicator(false, 'NO SERVER');
+                console.log('Status update failed:', err);
+            });
+        }
+        
+        function startStatusUpdates() {
+            if (statusUpdateInterval) {
+                clearInterval(statusUpdateInterval);
+            }
+            statusUpdateInterval = setInterval(() => {
+                fetchCurrentStatus();
+                fetchRadioState();
+            }, 3000);
+            fetchCurrentStatus();
+            fetchRadioState();
+        }
+        
+        function sendCommand(command) {
+            if (isCommandPending) {
+                return;
+            }
+            
+            isCommandPending = true;
+            setButtonsDisabled(true);
+            updateStatus('SENDING...', 'pending');
+            
+            fetch(`${BACKEND_URL}/command`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: command})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateStatus('OK', 'success');
+                    
+                    if (command === 'mpc play' || command.startsWith('radio-play')) {
+                        startStatusUpdates();
+                    } else if (command === 'mpc pause') {
+                        updateStationDisplay('PAUSED');
+                        updatePlaybackButtonHighlights(false, true);
+                    } else if (command === 'sudo shutdown -h now') {
+                        updateStationDisplay('SHUTTING DOWN');
+                        updateStatus('GOODBYE', 'success');
+                        if (statusUpdateInterval) {
+                            clearInterval(statusUpdateInterval);
+                            statusUpdateInterval = null;
+                        }
+                        updateConnectionIndicator(false, 'SHUTTING DOWN');
+                    }
+                } else {
+                    let errorMsg = '';
+                    switch(data.error_type) {
+                        case 'timeout':
+                            errorMsg = 'TIMEOUT';
+                            break;
+                        case 'command_failed':
+                            errorMsg = 'CMD FAILED';
+                            break;
+                        case 'forbidden_command':
+                            errorMsg = 'NOT ALLOWED';
+                            break;
+                        case 'ssh_not_found':
+                            errorMsg = 'NO SSH';
+                            break;
+                        default:
+                            errorMsg = 'ERROR';
+                    }
+                    updateStatus(errorMsg, 'error');
+                }
+                
+                setTimeout(() => {
+                    if (document.getElementById('status').textContent !== 'SENDING...') {
+                        if (!statusUpdateInterval) {
+                            updateStatus('', 'normal');
+                        }
+                    }
+                }, 3000);
+            })
+            .catch(err => {
+                updateStatus('NO SERVER', 'error');
+                console.error('Connection error:', err);
+            })
+            .finally(() => {
+                isCommandPending = false;
+                setButtonsDisabled(false);
+            });
+        }
+
+        function requestShutdown() {
+            const confirmed = window.confirm('Power down this radio now?\n\nTo turn it back on, unplug it and plug it back in.');
+            if (!confirmed) {
+                return;
+            }
+            sendCommand('sudo shutdown -h now');
+        }
+        
+        window.addEventListener('load', () => {
+            loadFavorites();
+            updateKeypadHighlights();
+            fetchStationDirectory();
+            loadStationsSource();
+            document.getElementById('stationsSourceInput').addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    submitStationsSource();
+                }
+            });
+            startStatusUpdates();
+        });
+
+        // ── Admin panel ──────────────────────────────────────────────────────
+
+        let adminLogInterval = null;
+        let adminReloadTimeout = null;
+        let stationsAutoUpdateEnabled = true;
+
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            const btn   = document.getElementById('adminToggleBtn');
+            const open  = panel.style.display === 'none';
+            panel.style.display = open ? 'block' : 'none';
+            btn.textContent = open ? 'Admin \u25b2' : 'Admin';
+            if (open) fetchAdminVersion();
+        }
+
+        function fetchAdminVersion() {
+            fetch(`${BACKEND_URL}/admin/version`)
+                .then(r => r.json())
+                .then(data => {
+                    document.getElementById('adminVersion').textContent =
+                        data.success ? data.version : '(version unavailable)';
+                })
+                .catch(() => {
+                    document.getElementById('adminVersion').textContent = '(version unavailable)';
+                });
+        }
+
+        // ── Update from GitHub ───────────────────────────────────────────────
+
+        function startUpdate() {
+            if (!confirm(
+                'Update software from GitHub?\n\n' +
+                'This runs:\n  git fetch origin\n  git pull --ff-only origin main\n  ./deploy-rotary.sh\n\n' +
+                'The service will restart. This takes about a minute.'
+            )) return;
+
+            const btn    = document.getElementById('updateBtn');
+            const logDiv = document.getElementById('updateLog');
+
+            btn.disabled          = true;
+            logDiv.style.display  = 'block';
+            logDiv.textContent    = 'Starting update...\n';
+            showAdminMessage('', false);
+
+            fetch(`${BACKEND_URL}/admin/update`, {
+                method:  'POST',
+                headers: {'Content-Type': 'application/json'},
+                body:    JSON.stringify({}),
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (!data.success) {
+                    logDiv.textContent = 'Error: ' + (data.error || 'Unknown error');
+                    btn.disabled = false;
+                    return;
+                }
+                startAdminLogPolling();
+            })
+            .catch(err => {
+                logDiv.textContent = 'Connection error: ' + err.message;
+                btn.disabled = false;
+            });
+        }
+
+        function startAdminLogPolling() {
+            if (adminLogInterval) clearInterval(adminLogInterval);
+
+            let serverWentDown = false;
+
+            adminLogInterval = setInterval(() => {
+                fetch(`${BACKEND_URL}/admin/log`)
+                .then(r => r.json())
+                .then(data => {
+                    const logDiv = document.getElementById('updateLog');
+                    if (data.success && data.log !== undefined) {
+                        logDiv.textContent = data.log;
+                        logDiv.scrollTop   = logDiv.scrollHeight;
+                    }
+
+                    if (data.done) {
+                        clearInterval(adminLogInterval);
+                        adminLogInterval = null;
+                        document.getElementById('updateBtn').disabled = false;
+                        fetchAdminVersion();
+                        showAdminMessage('Update complete! Reloading page in 30 seconds...', true);
+                        scheduleUpdateRefresh();
+                    } else if (data.failed) {
+                        clearInterval(adminLogInterval);
+                        adminLogInterval = null;
+                        document.getElementById('updateBtn').disabled = false;
+                        showAdminMessage('Update failed. See log above for details.', false);
+                    } else if (serverWentDown) {
+                        // Server came back — check log one more time then finish
+                        serverWentDown = false;
+                    }
+                })
+                .catch(() => {
+                    if (!serverWentDown) {
+                        serverWentDown = true;
+                        const logDiv = document.getElementById('updateLog');
+                        logDiv.textContent += '\n--- Service restarting... ---';
+                        logDiv.scrollTop    = logDiv.scrollHeight;
+                        showAdminMessage('Service is restarting — waiting for it to come back...', false);
+                    }
+                    // Server still down; keep polling — the next successful fetch will continue
+                });
+            }, 2000);
+        }
+
+        function scheduleUpdateRefresh() {
+            if (adminReloadTimeout) {
+                clearTimeout(adminReloadTimeout);
+            }
+
+            adminReloadTimeout = setTimeout(() => {
+                window.location.reload();
+            }, 30000);
+        }
+
+        // ── Restart service ──────────────────────────────────────────────────
+
+        function requestRestartService() {
+            if (!confirm('Restart the radio web service?\n\nThe page will reconnect automatically.')) return;
+
+            const btn = document.getElementById('restartBtn');
+            btn.disabled = true;
+            showAdminMessage('Restarting service...', false);
+
+            fetch(`${BACKEND_URL}/admin/restart`, {
+                method:  'POST',
+                headers: {'Content-Type': 'application/json'},
+                body:    JSON.stringify({}),
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    waitForServerReturn(() => {
+                        btn.disabled = false;
+                        showAdminMessage('Service restarted successfully!', true);
+                    });
+                } else {
+                    showAdminMessage('Restart failed: ' + (data.error || 'Unknown error'), false);
+                    btn.disabled = false;
+                }
+            })
+            .catch(err => {
+                // Connection may already be gone — assume restart is in progress
+                waitForServerReturn(() => {
+                    btn.disabled = false;
+                    showAdminMessage('Service restarted successfully!', true);
+                });
+            });
+        }
+
+        // ── Reboot Radio ─────────────────────────────────────────────────────
+
+        function requestReboot() {
+            if (!confirm(
+                'Reboot the radio now?\n\n' +
+                'The radio will be unavailable for about a minute.'
+            )) return;
+
+            const btn = document.getElementById('rebootBtn');
+            btn.disabled = true;
+            showAdminMessage('Rebooting...', false);
+            updateConnectionIndicator(false, 'REBOOTING');
+
+            fetch(`${BACKEND_URL}/admin/reboot`, {
+                method:  'POST',
+                headers: {'Content-Type': 'application/json'},
+                body:    JSON.stringify({}),
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    showAdminMessage('Radio is rebooting — will reconnect when it comes back online.', false);
+                    waitForServerReturn(() => {
+                        btn.disabled = false;
+                        showAdminMessage('Radio is back online!', true);
+                        updateConnectionIndicator(true, 'CONNECTED');
+                    });
+                } else {
+                    showAdminMessage('Reboot failed: ' + (data.error || 'Unknown error'), false);
+                    btn.disabled = false;
+                }
+            })
+            .catch(() => {
+                // Already rebooting
+                showAdminMessage('Radio is rebooting — will reconnect when it comes back online.', false);
+                waitForServerReturn(() => {
+                    btn.disabled = false;
+                    showAdminMessage('Radio is back online!', true);
+                    updateConnectionIndicator(true, 'CONNECTED');
+                });
+            });
+        }
+
+        // ── View service logs ────────────────────────────────────────────────
+
+        function fetchServiceLogs() {
+            const btn    = document.getElementById('logsBtn');
+            const logDiv = document.getElementById('serviceLogs');
+
+            btn.disabled         = true;
+            logDiv.style.display = 'block';
+            logDiv.textContent   = 'Loading logs...';
+
+            fetch(`${BACKEND_URL}/admin/service-logs`)
+            .then(r => r.json())
+            .then(data => {
+                logDiv.textContent = data.success
+                    ? (data.logs || '(no log output)')
+                    : ('Error: ' + (data.error || 'Could not fetch logs'));
+                logDiv.scrollTop = logDiv.scrollHeight;
+            })
+            .catch(err => {
+                logDiv.textContent = 'Connection error: ' + err.message;
+            })
+            .finally(() => {
+                btn.disabled = false;
+            });
+        }
+
+        // ── Helpers ──────────────────────────────────────────────────────────
+
+        function refreshPageNow() {
+            window.location.reload();
+        }
+
+        function waitForServerReturn(callback) {
+            const checkInterval = setInterval(() => {
+                fetch(`${BACKEND_URL}/status`, {
+                    method:  'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body:    JSON.stringify({}),
+                })
+                .then(r => r.json())
+                .then(data => {
+                    if (data.success) {
+                        clearInterval(checkInterval);
+                        if (callback) callback();
+                    }
+                })
+                .catch(() => { /* still down, keep waiting */ });
+            }, 3000);
+        }
+
+        function showAdminMessage(msg, success) {
+            const el = document.getElementById('adminMessage');
+            el.textContent = msg;
+            el.className   = 'admin-message' + (msg ? (success ? ' success' : ' error') : '');
+        }
+    </script>
+</body>
+</html>
