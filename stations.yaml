@@ -397,6 +397,49 @@ banks:
         name: "Non-Stop Pop"
         type: mp3_loop_random_start
         file: "GTA/Non Stop Pop FM - GTA V.mp3"
+  10:
+    name: "Nicaragua"
+    stations:
+      0:
+        name: "Radio ABC Estelí"
+        type: stream
+        url: "https://hoth.alonhosting.com:4205/stream"
+      1:
+        name: "Stereo Beso 94.5 FM Estelí"
+        type: stream
+        url: "https://a9.asurahosting.com/listen/stereo_beso/radio.mp3"
+      2:
+        name: "Fiesta Latina 89.1 FM Managua"
+        type: stream
+        url: "https://radios.solumedia.com/6596/stream"
+      3:
+        name: "Happy Radio 96.7 Managua"
+        type: stream
+        url: "https://radios.solumedia.com/6588/stream"
+      4:
+        name: "Radio La Primerisíma Managua"
+        type: stream
+        url: "https://polaris.hostingnica.net/9000/stream"
+      5:
+        name: "Radio Maranatha 103.5 Managua"
+        type: stream
+        url: "https://stream5.305stream.com:7031/live/;"
+      6:
+        name: "Radio Ometepe Altagracia"
+        type: stream
+        url: "https://rr5100.globalhost1.com/8240/stream"
+      7:
+        name: "Sendas FM 107.3 Matagalpa"
+        type: stream
+        url: "https://s17.ssl-stream.com/proxy/radiosendasfm?mp=/stream"
+      8:
+        name: "Radio Juan Pablo Segundo"
+        type: stream
+        url: "https://dc2.serverse.com:8040/stream"
+      9:
+        name: "Radio La Reyna"
+        type: stream
+        url: "https://dattavolt.com/8176/stream"
   9:
     name: "Offline Recordings"
     stations:
