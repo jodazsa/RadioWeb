@@ -443,7 +443,9 @@
         });
 
         audio.addEventListener('error', () => {
-            updateStatus('STREAM ERROR', 'error');
+            const code = audio.error ? audio.error.code : 0;
+            const msg = code === 2 ? 'NETWORK ERROR' : code === 4 ? 'UNSUPPORTED STREAM' : 'STREAM ERROR';
+            updateStatus(msg, 'error');
             setIndicator('disconnected', 'ERROR');
             isPlaying = false;
             updatePlayButtons();
@@ -567,7 +569,9 @@
                     for (const sk of stKeys) {
                         const s = bank.stations[sk];
                         if (s.type === 'stream' && s.url) {
-                            streamStations.push({ index: Number(sk), name: s.name, url: s.url });
+                            // Upgrade http:// to https:// to avoid mixed-content blocks on HTTPS pages
+                            const url = location.protocol === 'https:' ? s.url.replace(/^http:\/\//i, 'https://') : s.url;
+                            streamStations.push({ index: Number(sk), name: s.name, url });
                         }
                     }
                     if (streamStations.length > 0) {
