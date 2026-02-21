@@ -512,9 +512,14 @@
                     continue;
                 }
 
-                // "stations:" key at indent 4
-                if (indent === 4 && content === 'stations:') {
-                    inStations = true;
+                // Bank-level properties at indent 4 (name, stations:)
+                if (indent === 4 && !inStations && currentBank !== null) {
+                    if (content === 'stations:') {
+                        inStations = true;
+                    } else {
+                        const kvMatch = content.match(/^(\w+):\s*"?(.*?)"?\s*$/);
+                        if (kvMatch && kvMatch[1] === 'name') result.banks[currentBank].name = kvMatch[2];
+                    }
                     continue;
                 }
 
