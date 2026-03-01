@@ -140,6 +140,57 @@ banks:
         url: "https://onair.wfuv.org/onair-aacplus"
         # PLAYS AD FIRST
   3:
+    name: "BBC"
+    stations:
+      0:
+        name: "BBC Radio One"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d128000.norewind.m3u8"
+      1:
+        name: "BBC Radio One Dance"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_62063831/live/ww/bbc_radio_one_dance/bbc_radio_one_dance.isml/bbc_radio_one_dance-audio%3d320000.norewind.m3u8"
+      2:
+        name: "BBC 1xtra"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_92079267/live/ww/bbc_1xtra/bbc_1xtra.isml/bbc_1xtra-audio%3d320000.norewind.m3u8"
+      3:
+        name: "BBC Radio Two"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d128000.norewind.m3u8"
+      4:
+        name: "BBC Radio Three"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d128000.norewind.m3u8"
+      5:
+        name: "BBC Radio Four"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d128000.norewind.m3u8"
+      6:
+        name: "BBC Radio Five Live"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d128000.norewind.m3u8"
+      7:
+        name: "BBC Radio Six Music"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d128000.norewind.m3u8"
+      8:
+        name: "BBC Radio Scotland"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_43322914/live/ww/bbc_radio_scotland_fm/bbc_radio_scotland_fm.isml/bbc_radio_scotland_fm-audio%3d128000.norewind.m3u8"
+      9:
+        name: "BBC Radio Wales"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_97517794/live/ww/bbc_radio_wales_fm/bbc_radio_wales_fm.isml/bbc_radio_wales_fm-audio%3d128000.norewind.m3u8"
+      10:
+        name: "BBC Radio World Service"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_87948813/live/ww/bbc_world_service/bbc_world_service.isml/bbc_world_service-audio%3d128000.norewind.m3u8"
+      11:
+        name: "BBC Radio Three Unwind"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_30624046/live/ww/bbc_radio_three_unwind/bbc_radio_three_unwind.isml/bbc_radio_three_unwind-audio%3d128000.norewind.m3u8"
+  4:
     name: "Around the world 1"
     stations:
       0:
@@ -182,7 +233,7 @@ banks:
         name: "triple j Australia"
         type: stream
         url: "https://streaming.abc-cdn.net.au/audio/hls/triplejnsw.m3u8"
-  4:
+  5:
     name: "Around the world 2"
     stations:
       0:
@@ -225,57 +276,6 @@ banks:
         name: "Yabiladi Casablanca Morocco"
         type: stream
         url: "https://radio.yabiladi.com:9002/;stream.mp3"
-  5:
-    name: "BBC"
-    stations:
-      0:
-        name: "BBC Radio One"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d128000.norewind.m3u8"
-      1:
-        name: "BBC Radio One"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_62063831/live/ww/bbc_radio_one_dance/bbc_radio_one_dance.isml/bbc_radio_one_dance-audio%3d320000.norewind.m3u8"
-      2:
-        name: "BBC Radio One"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_92079267/live/ww/bbc_1xtra/bbc_1xtra.isml/bbc_1xtra-audio%3d320000.norewind.m3u8"
-      3:
-        name: "BBC Radio Two"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d128000.norewind.m3u8"
-      4:
-        name: "BBC Radio Three"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d128000.norewind.m3u8"
-      5:
-        name: "BBC Radio Four"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d128000.norewind.m3u8"
-      6:
-        name: "BBC Radio Five Live"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d128000.norewind.m3u8"
-      7:
-        name: "BBC Radio Six Music"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d128000.norewind.m3u8"
-      8:
-        name: "BBC Radio Scotland"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_43322914/live/ww/bbc_radio_scotland_fm/bbc_radio_scotland_fm.isml/bbc_radio_scotland_fm-audio%3d128000.norewind.m3u8"
-      9:
-        name: "BBC Radio Wales"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_97517794/live/ww/bbc_radio_wales_fm/bbc_radio_wales_fm.isml/bbc_radio_wales_fm-audio%3d128000.norewind.m3u8"
-      10:
-        name: "BBC Radio World Service"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_87948813/live/ww/bbc_world_service/bbc_world_service.isml/bbc_world_service-audio%3d128000.norewind.m3u8"
-      11:
-        name: "BBC Radio Three Unwind"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_30624046/live/ww/bbc_radio_three_unwind/bbc_radio_three_unwind.isml/bbc_radio_three_unwind-audio%3d128000.norewind.m3u8"
   6:
     name: "College Radio"
     stations:
