@@ -280,42 +280,46 @@ banks:
     name: "College Radio"
     stations:
       0:
+        name: "KXLU Loyola Marymount"
+        type: stream
+        url: "https://kxlu.streamguys1.com/kxlu-hi"
+      1:
         name: "WKCR Columbia"
         type: stream
-        url: "https://wkcr.streamguys1.com/live"
-      1:
+        url: "https://wkcr.streamguys1.com/live"https://kxlu.streamguys1.com/kxlu-hi"
+      2:
         name: "WNYU"
         type: stream
         url: "http://cinema.acs.its.nyu.edu:8000/wnyu128.mp3"
-      2:
+      3:
         name: "WCBN U of Michigan"
         type: stream
         url: "https://floyd.wcbn.org:8443/wcbn-hd.mp3"
-      3:
+      4:
         name: "KVCU CU Boulder"
         type: stream
         url: "https://kvcu.streamguys1.com/live"
-      4:
+      5:
         name: "WKNC NC State Raleigh"
         type: stream
         url: "https://das-edge14-live365-dal02.cdnstream.com/a45877"
-      5:
+      6:
         name: "KALX UC Berkeley"
         type: stream
         url: "https://stream.kalx.berkeley.edu:8443/kalx-128.mp3"
-      6:
+      7:
         name: "KCRW Santa Monica College"
         type: stream
         url: "https://streams.kcrw.com/kcrw_mp3"
-      7:
+      8:
         name: "KUAF U of A Fayetteville"
         type: stream
         url: "https://war.streamguys1.com:7031/kuaf1"
-      8:
+      9:
         name: "WIDR FM Western Michigan University in Kalamazoo"
         type: stream
         url: "https://widrfm.net/stream"
-      9:
+      10:
         name: "KSPC Claremont Colleges"
         type: stream
         url: "https://kspc.radioca.st/stream"
