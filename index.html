@@ -345,6 +345,8 @@
     <!-- Hidden audio element; playsinline keeps iOS from going full-screen -->
     <audio id="audioPlayer" preload="none" playsinline></audio>
 
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.17/dist/hls.min.js"></script>
+
     <script>
         // ── Config ───────────────────────────────────────────────────────────
         const STATIONS_URL = 'stations.yaml';
@@ -355,6 +357,7 @@
         let currentStation = null; // { name, url }
         let isPlaying = false;
         let isPaused  = false;
+        let hlsPlayer = null;
 
         // ── Audio element ────────────────────────────────────────────────────
         const audio = document.getElementById('audioPlayer');
@@ -379,7 +382,12 @@
 
         audio.addEventListener('error', () => {
             const code = audio.error ? audio.error.code : 0;
-            const msg = code === 2 ? 'NETWORK ERROR' : code === 4 ? 'UNSUPPORTED STREAM' : 'STREAM ERROR';
+            const isHls = currentStation && /\.m3u8($|[?#])/i.test(currentStation.url);
+            const msg = code === 2
+                ? 'NETWORK ERROR'
+                : code === 4
+                    ? (isHls ? 'HLS PLAYBACK FAILED' : 'UNSUPPORTED STREAM')
+                    : 'STREAM ERROR';
             updateStatus(msg, 'error');
             setIndicator('disconnected', 'ERROR');
             isPlaying = false;
@@ -576,6 +584,46 @@
 
         // ── Playback ─────────────────────────────────────────────────────────
 
+        function destroyHlsPlayer() {
+            if (hlsPlayer) {
+                hlsPlayer.destroy();
+                hlsPlayer = null;
+            }
+        }
+
+        function isHlsStream(url) {
+            return /\.m3u8($|[?#])/i.test(url);
+        }
+
+        function setAudioSource(url) {
+            destroyHlsPlayer();
+
+            const canPlayNativeHls = audio.canPlayType('application/vnd.apple.mpegurl') !== '';
+            if (isHlsStream(url) && !canPlayNativeHls && window.Hls && window.Hls.isSupported()) {
+                hlsPlayer = new window.Hls({
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                });
+
+                hlsPlayer.on(window.Hls.Events.ERROR, (_, data) => {
+                    if (data && data.fatal) {
+                        updateStatus('HLS PLAYBACK FAILED', 'error');
+                        setIndicator('disconnected', 'ERROR');
+                        isPlaying = false;
+                        updatePlayButtons();
+                    }
+                });
+
+                hlsPlayer.attachMedia(audio);
+                hlsPlayer.on(window.Hls.Events.MEDIA_ATTACHED, () => {
+                    hlsPlayer.loadSource(url);
+                });
+                return;
+            }
+
+            audio.src = url;
+        }
+
         function playStation(station) {
             const bank = banks[currentBankIdx];
             currentStation = station;
@@ -592,7 +640,7 @@
 
             // Reset audio and load new source
             audio.pause();
-            audio.src = station.url;
+            setAudioSource(station.url);
             audio.load();
 
             const promise = audio.play();
@@ -634,6 +682,7 @@
 
         function stopStation() {
             audio.pause();
+            destroyHlsPlayer();
             audio.src = '';
             isPlaying = false;
             isPaused  = false;
