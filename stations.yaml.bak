@@ -4,65 +4,8 @@
 #  mp3_loop_random_start:  play one audio file, seek to a random position, loop forever
 #  mp3_dir_random_start_then_in_order:  choose one item randomly from the listed directory.  Play the item from the start, then continue playing items from the directory in order, looping to the beginning of the directory once the end is reached.
 #  
-# Auto-generated from Google Sheet. Do not edit directly.
-#  
 banks:
   0:
-    name: "NYC"
-    stations:
-      0:
-        name: "WNYC 93.9 FM (NPR)"
-        type: stream
-        url: "https://fm939.wnyc.org/wnycfm.aac"
-      1:
-        name: "WQXR 105.9 Classical"
-        type: stream
-        url: "https://stream.wqxr.org/wqxr.aac"
-      2:
-        name: "1010 WINS 92.3 FM (News)"
-        type: stream
-        url: "https://live.amperwave.net/direct/audacy-winsamaac-imc"
-      3:
-        name: "WFAN 660 AM / 101.9 FM (Sports)"
-        type: stream
-        url: "https://live.amperwave.net/direct/audacy-wfanamaac-imc"
-      4:
-        name: "WCBS-FM 101.1 (Classic Hits)"
-        type: stream
-        url: "https://live.amperwave.net/direct/audacy-wcbsfmaac-imc"
-      5:
-        name: "New 102.7 WNEW (Hot AC)"
-        type: stream
-        url: "https://live.amperwave.net/direct/audacy-wnewfmaac-imc"
-      6:
-        name: "94.7 The Block WXBK (Throwbacks)"
-        type: stream
-        url: "https://live.amperwave.net/direct/audacy-wxbkfmaac-imc"
-      7:
-        name: "Z100 WHTZ 100.3 (Top 40)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc1469"
-      8:
-        name: "106.7 Lite FM WLTW (AC)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc1477"
-      9:
-        name: "Q104.3 WAXQ (Classic Rock)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc1465"
-      10:
-        name: "Power 105.1 WWPR (Hip-Hop)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc1481"
-      11:
-        name: "103.5 KTU WKTU (Rhythmic AC)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc1473"
-      12:
-        name: "WOR 710 AM (Talk)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc5874"
-  1:
     name: "Jazz"
     stations:
       0:
@@ -105,7 +48,7 @@ banks:
         name: "Czech Jazz"
         type: stream
         url: "https://rozhlas.stream/jazz_high.aac"
-  2:
+  1:
     name: "Classical"
     stations:
       0:
@@ -136,6 +79,7 @@ banks:
         name: "KQAC"
         type: stream
         url: "https://allclassical.streamguys1.com/ac128kmp3"
+        # PLAYS AD FIRST
       7:
         name: "WDAV - Davidson College NC"
         type: stream
@@ -148,21 +92,22 @@ banks:
         name: "KVOD - Denver"
         type: stream
         url: "https://stream1.cprnetwork.org/cpr2_lo"
-  3:
-    name: "U.S."
+        # PLAYS AD FIRST
+  2:
+    name: "Around the US"
     stations:
       0:
-        name: "WFMU 91.1 Hudson Valley"
+        name: "WFMU 91.1 Hudsdon Valley"
         type: stream
         url: "https://stream0.wfmu.org/freeform-128k.mp3"
       1:
-        name: "WPKN Bridgeport CT 89.5"
+        name: "WPKN Bridgeport, CT 89.5"
         type: stream
         url: "https://ice25.securenetsystems.net/WPKN"
       2:
         name: "KEXP Seattle 90.3 FM"
         type: stream
-        url: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3"
+        url: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3"        
       3:
         name: "KABF Little Rock"
         type: stream
@@ -175,6 +120,7 @@ banks:
         name: "Hot 97 NYC"
         type: stream
         url: "https://27253.live.streamtheworld.com/WQHTFMAAC.aac"
+        # PLAYS AD FIRST
       6:
         name: "Iowa Public Radio"
         type: stream
@@ -183,189 +129,17 @@ banks:
         name: "WDVX 89.9 Knoxville"
         type: stream
         url: "https://wdvx.streamguys1.com/live"
+        # QUIET
       8:
         name: "WMOT 89.5 Middle Tennessee"
         type: stream
         url: "https://26443.live.streamtheworld.com/WMOTFM.mp3"
       9:
-        name: "KBOO Portland OR"
-        type: stream
-        url: "https://live.kboo.fm:8443/high"
-      10:
-        name: "KMPG Portland ME"
-        type: stream
-        url: "https://stream.pacificaservice.org:9000/wmpg"
-      11:
-        name: "KFFP Portland"
-        type: stream
-        url: "http://listen.freeformportland.org:8000/stream"
-      12:
-        name: "KXRY Portland"
-        type: stream
-        url: "https://listen.xray.fm/stream"
-  4:
-    name: "College Radio"
-    stations:
-      0:
-        name: "WFUV Fordham"
+        name: "WFUV Fordham University"
         type: stream
         url: "https://onair.wfuv.org/onair-aacplus"
-      1:
-        name: "KXLU Loyola Marymount"
-        type: stream
-        url: "https://kxlu.streamguys1.com/kxlu-hi"
-      2:
-        name: "WPRB Princeton"
-        type: stream
-        url: "https://wprb.streamguys1.com/live"
-      3:
-        name: "WMBR MIT"
-        type: stream
-        url: "https://wmbr.org:8002/hi"
-      4:
-        name: "WKCR Columbia"
-        type: stream
-        url: "https://wkcr.streamguys1.com/live"
-      5:
-        name: "WNYU New York"
-        type: stream
-        url: "http://cinema.acs.its.nyu.edu:8000/wnyu128.mp3"
-      6:
-        name: "WCBN Michigan"
-        type: stream
-        url: "https://floyd.wcbn.org:8443/wcbn-hd.mp3"
-      7:
-        name: "KVCU CU Boulder"
-        type: stream
-        url: "https://kvcu.streamguys1.com/live"
-      8:
-        name: "WKNC NC State Raleigh"
-        type: stream
-        url: "https://das-edge14-live365-dal02.cdnstream.com/a45877"
-      9:
-        name: "KALX UC Berkeley"
-        type: stream
-        url: "https://stream.kalx.berkeley.edu:8443/kalx-128.mp3"
-      10:
-        name: "KCRW Santa Monica College"
-        type: stream
-        url: "https://streams.kcrw.com/kcrw_mp3"
-      11:
-        name: "KUAF U of A Fayetteville"
-        type: stream
-        url: "https://war.streamguys1.com:7031/kuaf1"
-      12:
-        name: "WIDR FM Western Michigan University"
-        type: stream
-        url: "https://widrfm.net/stream"
-      13:
-        name: "KSPC Claremont Colleges"
-        type: stream
-        url: "https://kspc.radioca.st/stream"
-      14:
-        name: "KDVS UC Davis"
-        type: stream
-        url: "https://listen.kdvs.org/stream"
-      15:
-        name: "KFJC Foothill College"
-        type: stream
-        url: "https://netcast.kfjc.org/kfjc-128k-mp3"
-      16:
-        name: "KUSF San Francisco"
-        type: stream
-        url: "https://listen.kusf.org/stream?nocache=0.8844611222810317?no-cache=0.6308894030001022"
-      17:
-        name: "KVRX UT Austin"
-        type: stream
-        url: "https://streams.kut.org/5020_192.mp3"
-      18:
-        name: "KWVA Oregon"
-        type: stream
-        url: "http://kwvaradio.uoregon.edu:8000/stream/1/"
-  5:
-    name: "Global"
-    stations:
-      0:
-        name: "La Kalle 96.9"
-        type: stream
-        url: "https://27383.live.streamtheworld.com/LA_KALLE.mp3"
-      1:
-        name: "Los 40 Principales Mexico"
-        type: stream
-        url: "https://26733.live.streamtheworld.com/LOS40_MEXICO.mp3"
-      2:
-        name: "Alpha Boys School Radio - Jamaica"
-        type: stream
-        url: "https://alphaboys-live.streamguys1.com/alphaboys.aac"
-      3:
-        name: "Ashiya - Japan"
-        type: stream
-        url: "https://s3.radio.co/sc8d895604/listen"
-      4:
-        name: "WREP Live - Tokyo"
-        type: stream
-        url: "https://c13.radioboss.fm:8200/stream"
-      5:
-        name: "Radio Eigekai"
-        type: stream
-        url: "http://stream.radiojar.com/66zgtscuc1duv?1768412014"
-      6:
-        name: "Red Dirt Radio - Australia"
-        type: stream
-        url: "https://az1.syd2.hostyourservices.au:8010/magic876"
-      7:
-        name: "Punk Radio Underground Poland"
-        type: stream
-        url: "https://s1.slotex.pl:7604/stream/1/"
-      8:
-        name: "fbi Sydney"
-        type: stream
-        url: "https://streamer.fbiradio.com/stream"
-      9:
-        name: "triple j Australia"
-        type: stream
-        url: "https://streaming.abc-cdn.net.au/audio/hls/triplejnsw.m3u8"
-      10:
-        name: "FIP France"
-        type: stream
-        url: "https://stream.radiofrance.fr/fip/fip_hifi.m3u8"
-      11:
-        name: "Radio Nova France"
-        type: stream
-        url: "https://novazz.ice.infomaniak.ch/novazz-128.mp3"
-      12:
-        name: "PHEVER Dublin"
-        type: stream
-        url: "https://uk1.internet-radio.com/proxy/phever?mp=/stream"
-      13:
-        name: "Highland Radio Letterkenny Ireland"
-        type: stream
-        url: "https://29103.live.streamtheworld.com/HIGHLAND_RADIO.mp3"
-      14:
-        name: "RTE Lyric Dublin"
-        type: stream
-        url: "https://www.rte.ie/manifests/lyric.m3u8"
-      15:
-        name: "GPM Radio Russia"
-        type: stream
-        url: "https://srv01.gpmradio.ru/stream/pro/aac/64/41"
-      16:
-        name: "Transilvania"
-        type: stream
-        url: "https://s2.radio.co/sce9d4eadd/listen"
-      17:
-        name: "Nova Brasil FM"
-        type: stream
-        url: "https://27403.live.streamtheworld.com/NOVABRASIL_SSAAAC.aac"
-      18:
-        name: "Radio Rebelde Havana"
-        type: stream
-        url: "https://icecast.teveo.cu/zrXXWK9F"
-      19:
-        name: "Yabiladi Casablanca Morocco"
-        type: stream
-        url: "https://radio.yabiladi.com:9002/;stream.mp3"
-  6:
+        # PLAYS AD FIRST
+  3:
     name: "BBC"
     stations:
       0:
@@ -416,6 +190,139 @@ banks:
         name: "BBC Radio Three Unwind"
         type: stream
         url: "http://as-hls-ww-live.akamaized.net/pool_30624046/live/ww/bbc_radio_three_unwind/bbc_radio_three_unwind.isml/bbc_radio_three_unwind-audio%3d128000.norewind.m3u8"
+  4:
+    name: "Around the world 1"
+    stations:
+      0:
+        name: "La Kalle 96.9"
+        type: stream
+        url: "https://27383.live.streamtheworld.com/LA_KALLE.mp3"
+      1:
+        name: "Los 40 Principales Mexico"
+        type: stream
+        url: "https://26733.live.streamtheworld.com/LOS40_MEXICO.mp3"
+      2:
+        name: "Alpha Boys School Radio - Jamaica"
+        type: stream
+        url: "https://alphaboys-live.streamguys1.com/alphaboys.aac"
+      3:
+        name: "Ashiya - Japan"
+        type: stream
+        url: "https://s3.radio.co/sc8d895604/listen"
+      4:
+        name: "WREP Live - Tokyo"
+        type: stream
+        url: "https://c13.radioboss.fm:8200/stream"
+      5:
+        name: "Radio Eigekai"
+        type: stream
+        url: "http://stream.radiojar.com/66zgtscuc1duv?1768412014"
+      6:
+        name: "Red Dirt Radio - Australia"
+        type: stream
+        url: "https://az1.syd2.hostyourservices.au:8010/magic876"
+      7:
+        name: "Punk Radio Underground Poland"
+        type: stream
+        url: "https://s1.slotex.pl:7604/stream/1/"
+      8:
+        name: "fbi Sydney"
+        type: stream
+        url: "https://streamer.fbiradio.com/stream"
+      9:
+        name: "triple j Australia"
+        type: stream
+        url: "https://streaming.abc-cdn.net.au/audio/hls/triplejnsw.m3u8"
+  5:
+    name: "Around the world 2"
+    stations:
+      0:
+        name: "FIP France"
+        type: stream
+        url: "https://stream.radiofrance.fr/fip/fip_hifi.m3u8"
+      1:
+        name: "Radio Nova France"
+        type: stream
+        url: "https://novazz.ice.infomaniak.ch/novazz-128.mp3"
+      2:
+        name: "PHEVER Dublin"
+        type: stream
+        url: "https://uk1.internet-radio.com/proxy/phever?mp=/stream"
+      3:
+        name: "Highland Radio Letterkenny Ireland"
+        type: stream
+        url: "https://29103.live.streamtheworld.com/HIGHLAND_RADIO.mp3"
+      4:
+        name: "RTE Lyric Dublin"
+        type: stream
+        url: "https://www.rte.ie/manifests/lyric.m3u8"
+      5:
+        name: "GPM Radio Russia"
+        type: stream
+        url: "https://srv01.gpmradio.ru/stream/pro/aac/64/41"
+      6:
+        name: "Transilvania"
+        type: stream
+        url: "https://s2.radio.co/sce9d4eadd/listen"
+      7:
+        name: "Nova Brasil FM"
+        type: stream
+        url: "https://27403.live.streamtheworld.com/NOVABRASIL_SSAAAC.aac"
+      8:
+        name: "Radio Rebelde Havana"
+        type: stream
+        url: "https://icecast.teveo.cu/zrXXWK9F"
+      9:
+        name: "Yabiladi Casablanca Morocco"
+        type: stream
+        url: "https://radio.yabiladi.com:9002/;stream.mp3"
+  6:
+    name: "College Radio"
+    stations:
+      0:
+        name: "KXLU Loyola Marymount"
+        type: stream
+        url: "https://kxlu.streamguys1.com/kxlu-hi"
+      1:
+        name: "WKCR Columbia"
+        type: stream
+        url: "https://wkcr.streamguys1.com/live"https://kxlu.streamguys1.com/kxlu-hi"
+      2:
+        name: "WNYU"
+        type: stream
+        url: "http://cinema.acs.its.nyu.edu:8000/wnyu128.mp3"
+      3:
+        name: "WCBN U of Michigan"
+        type: stream
+        url: "https://floyd.wcbn.org:8443/wcbn-hd.mp3"
+      4:
+        name: "KVCU CU Boulder"
+        type: stream
+        url: "https://kvcu.streamguys1.com/live"
+      5:
+        name: "WKNC NC State Raleigh"
+        type: stream
+        url: "https://das-edge14-live365-dal02.cdnstream.com/a45877"
+      6:
+        name: "KALX UC Berkeley"
+        type: stream
+        url: "https://stream.kalx.berkeley.edu:8443/kalx-128.mp3"
+      7:
+        name: "KCRW Santa Monica College"
+        type: stream
+        url: "https://streams.kcrw.com/kcrw_mp3"
+      8:
+        name: "KUAF U of A Fayetteville"
+        type: stream
+        url: "https://war.streamguys1.com:7031/kuaf1"
+      9:
+        name: "WIDR FM Western Michigan University in Kalamazoo"
+        type: stream
+        url: "https://widrfm.net/stream"
+      10:
+        name: "KSPC Claremont Colleges"
+        type: stream
+        url: "https://kspc.radioca.st/stream"
   7:
     name: "Ambient"
     stations:
@@ -458,8 +365,51 @@ banks:
       9:
         name: "Morong Community Radio Philippines"
         type: stream
-        url: "https://broadcast.shoutcheap.com/proxy/morong/stream"
+        url: "https://broadcast.shoutcheap.com/proxy/morong/stream" 
   8:
+    name: "Grand Theft Auto"
+    stations:
+      0:
+        name: "FlyLo FM"
+        type: mp3_loop_random_start
+        file: "GTA/FlyLo FM - GTA V.mp3"
+      1:
+        name: "Fusion FM"
+        type: mp3_loop_random_start
+        file: "GTA/Fusion FM - GTA IV.mp3"
+      2:
+        name: "Los Santos Rock Radio"
+        type: mp3_loop_random_start
+        file: "GTA/Los Santos Rock Radio - GTA V.mp3"
+      3:
+        name: "MSX FM"
+        type: mp3_loop_random_start
+        file: "GTA/MSX FM - GTA III.mp3"
+      4:
+        name: "Jazz Nation Radio"
+        type: mp3_loop_random_start
+        file: "GTA/Jazz Nation Radio - GTA IV.mp3"
+      5:
+        name: "K-DST"
+        type: mp3_loop_random_start
+        file: "GTA/K-DST - GTA San Andreas.mp3"
+      6:
+        name: "K Rose"
+        type: mp3_loop_random_start
+        file: "GTA/K Rose - GTA San Andreas.mp3"
+      7:
+        name: "Blue Ark Radio"
+        type: mp3_loop_random_start
+        file: "GTA/The Blue Ark - GTA V.mp3"
+      8:
+        name: "K-JAH Radio"
+        type: mp3_loop_random_start
+        file: "GTA/K-JAH - GTA III.mp3"
+      9:
+        name: "Non-Stop Pop"
+        type: mp3_loop_random_start
+        file: "GTA/Non Stop Pop FM - GTA V.mp3"
+  10:
     name: "Nicaragua"
     stations:
       0:
@@ -498,3 +448,51 @@ banks:
         name: "Radio Juan Pablo Segundo"
         type: stream
         url: "https://dc2.serverse.com:8040/stream"
+      9:
+        name: "Radio La Reyna"
+        type: stream
+        url: "https://dattavolt.com/8176/stream"
+  9:
+    name: "Offline Recordings"
+    stations:
+      0:
+        name: "Theme Time Radio with Bob Dylan"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/BobDylan"
+      1:
+        name: "Iggy Pop"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/IggyPop"
+      2:
+        name: "Jarvis Cocker"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/JarvisCocker"    
+      3:
+        name: "Joe Strummer"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/JoeStrummer"    
+      4:
+        name: "John Peel"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/JohnPeel"    
+      5:
+        name: "Marian McPartland"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/MarianMcPartland"    
+      6:
+        name: "Paul McCartney"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/PaulMcCartney"    
+      7:
+        name: "Henry Rollins"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/HenryRollins"    
+      8:
+        name: "Muji BGM 1980-2000"
+        type: mp3_loop_random_start
+        file: "Ambient/Muji BGM 1980-2000.mp3"    
+      9:
+        name: "Alice Cooper"
+        type: mp3_dir_random_start_then_in_order
+        dir: "shows/AliceCooper"    
+
