@@ -8,103 +8,99 @@
 #  
 banks:
   0:
-    name: "NYC"
+    name: "Ambient"
     stations:
       0:
-        name: "WNYC 93.9 FM (NPR)"
+        name: "Mission Control - Soma FM"
         type: stream
-        url: "https://fm939.wnyc.org/wnycfm.aac"
+        url: "https://ice5.somafm.com/missioncontrol-128-aac"
       1:
-        name: "WQXR 105.9 Classical"
+        name: "Drone Zone - Soma FM"
         type: stream
-        url: "https://stream.wqxr.org/wqxr.aac"
+        url: "https://ice5.somafm.com/dronezone-128-aac"
       2:
-        name: "1010 WINS 92.3 FM (News)"
+        name: "Space Station Soma FM"
         type: stream
-        url: "https://live.amperwave.net/direct/audacy-winsamaac-imc"
+        url: "https://ice5.somafm.com/spacestation-128-aac"
       3:
-        name: "WFAN 660 AM / 101.9 FM (Sports)"
+        name: "DEF CON Radio Soma FM"
         type: stream
-        url: "https://live.amperwave.net/direct/audacy-wfanamaac-imc"
+        url: "https://ice5.somafm.com/defcon-128-aac"
       4:
-        name: "WCBS-FM 101.1 (Classic Hits)"
+        name: "Dark Zone Soma FM"
         type: stream
-        url: "https://live.amperwave.net/direct/audacy-wcbsfmaac-imc"
+        url: "https://ice5.somafm.com/darkzone-128-aac"
       5:
-        name: "New 102.7 WNEW (Hot AC)"
+        name: "Vaporwaves Soma FM"
         type: stream
-        url: "https://live.amperwave.net/direct/audacy-wnewfmaac-imc"
+        url: "https://ice5.somafm.com/vaporwaves-128-aac"
       6:
-        name: "94.7 The Block WXBK (Throwbacks)"
+        name: "Soma FM Specials"
         type: stream
-        url: "https://live.amperwave.net/direct/audacy-wxbkfmaac-imc"
+        url: "https://ice5.somafm.com/specials-128-aac"
       7:
-        name: "Z100 WHTZ 100.3 (Top 40)"
+        name: "9128.live"
         type: stream
-        url: "http://stream.revma.ihrhls.com/zc1469"
+        url: "https://streams.radio.co/s0aa1e6f4a/listen"
       8:
-        name: "106.7 Lite FM WLTW (AC)"
+        name: "Moon Phase Radio Hertford UK"
         type: stream
-        url: "http://stream.revma.ihrhls.com/zc1477"
+        url: "https://cp12.serverse.com/proxy/moonphase/stream"
       9:
-        name: "Q104.3 WAXQ (Classic Rock)"
+        name: "Morong Community Radio Philippines"
         type: stream
-        url: "http://stream.revma.ihrhls.com/zc1465"
-      10:
-        name: "Power 105.1 WWPR (Hip-Hop)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc1481"
-      11:
-        name: "103.5 KTU WKTU (Rhythmic AC)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc1473"
-      12:
-        name: "WOR 710 AM (Talk)"
-        type: stream
-        url: "http://stream.revma.ihrhls.com/zc5874"
+        url: "https://broadcast.shoutcheap.com/proxy/morong/stream"
   1:
-    name: "Jazz"
+    name: "BBC"
     stations:
       0:
-        name: "WWOZ New Orleans"
+        name: "BBC Radio One"
         type: stream
-        url: "http://wwoz-sc.streamguys1.com/wwoz-hi.mp3"
+        url: "http://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d128000.norewind.m3u8"
       1:
-        name: "WBGO Jazz 88 Newark"
+        name: "BBC Radio One Dance"
         type: stream
-        url: "https://ais-sa8.cdnstream1.com/3629_64.aac"
+        url: "http://as-hls-ww-live.akamaized.net/pool_62063831/live/ww/bbc_radio_one_dance/bbc_radio_one_dance.isml/bbc_radio_one_dance-audio%3d320000.norewind.m3u8"
       2:
-        name: "WDCB"
+        name: "BBC 1xtra"
         type: stream
-        url: "https://wdcb-ice.streamguys1.com/mobile-AAC"
+        url: "http://as-hls-ww-live.akamaized.net/pool_92079267/live/ww/bbc_1xtra/bbc_1xtra.isml/bbc_1xtra-audio%3d320000.norewind.m3u8"
       3:
-        name: "KMHD"
+        name: "BBC Radio Two"
         type: stream
-        url: "https://ais-sa3.cdnstream1.com/2442_128.aac/playlist.m3u8"
+        url: "http://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d128000.norewind.m3u8"
       4:
-        name: "KCSM"
+        name: "BBC Radio Three"
         type: stream
-        url: "https://ice7.securenetsystems.net/KCSM2"
+        url: "http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d128000.norewind.m3u8"
       5:
-        name: "WPFW"
+        name: "BBC Radio Four"
         type: stream
-        url: "https://streams.pacifica.org:9000/wpfw_128"
+        url: "http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d128000.norewind.m3u8"
       6:
-        name: "KUVO"
+        name: "BBC Radio Five Live"
         type: stream
-        url: "https://kuvo.streamguys1.com/kuvo-aac-128"
+        url: "http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d128000.norewind.m3u8"
       7:
-        name: "CJRT 91.1 Jazz FM"
+        name: "BBC Radio Six Music"
         type: stream
-        url: "https://hil-streamb1-ais-relay1.streamb.live/SB00009/playlist.m3u8"
+        url: "http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d128000.norewind.m3u8"
       8:
-        name: "Jazz 88.3 San Diego"
+        name: "BBC Radio Scotland"
         type: stream
-        url: "https://ksds-ice.streamguys1.com/ksds.mp3"
+        url: "http://as-hls-ww-live.akamaized.net/pool_43322914/live/ww/bbc_radio_scotland_fm/bbc_radio_scotland_fm.isml/bbc_radio_scotland_fm-audio%3d128000.norewind.m3u8"
       9:
-        name: "Czech Jazz"
+        name: "BBC Radio Wales"
         type: stream
-        url: "https://rozhlas.stream/jazz_high.aac"
+        url: "http://as-hls-ww-live.akamaized.net/pool_97517794/live/ww/bbc_radio_wales_fm/bbc_radio_wales_fm.isml/bbc_radio_wales_fm-audio%3d128000.norewind.m3u8"
+      10:
+        name: "BBC Radio World Service"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_87948813/live/ww/bbc_world_service/bbc_world_service.isml/bbc_world_service-audio%3d128000.norewind.m3u8"
+      11:
+        name: "BBC Radio Three Unwind"
+        type: stream
+        url: "http://as-hls-ww-live.akamaized.net/pool_30624046/live/ww/bbc_radio_three_unwind/bbc_radio_three_unwind.isml/bbc_radio_three_unwind-audio%3d128000.norewind.m3u8"
   2:
     name: "Classical"
     stations:
@@ -149,61 +145,6 @@ banks:
         type: stream
         url: "https://stream1.cprnetwork.org/cpr2_lo"
   3:
-    name: "U.S."
-    stations:
-      0:
-        name: "WFMU 91.1 Hudson Valley"
-        type: stream
-        url: "https://stream0.wfmu.org/freeform-128k.mp3"
-      1:
-        name: "WPKN Bridgeport CT 89.5"
-        type: stream
-        url: "https://ice25.securenetsystems.net/WPKN"
-      2:
-        name: "KEXP Seattle 90.3 FM"
-        type: stream
-        url: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3"
-      3:
-        name: "KABF Little Rock"
-        type: stream
-        url: "https://cast.acornradio.org/kabf"
-      4:
-        name: "SoCal Sound 88.5 FM"
-        type: stream
-        url: "https://www.streamvortex.com:8444/s/12200/"
-      5:
-        name: "Hot 97 NYC"
-        type: stream
-        url: "https://27253.live.streamtheworld.com/WQHTFMAAC.aac"
-      6:
-        name: "Iowa Public Radio"
-        type: stream
-        url: "https://studioone-stream.iowapublicradio.org/StudioOne.mp3"
-      7:
-        name: "WDVX 89.9 Knoxville"
-        type: stream
-        url: "https://wdvx.streamguys1.com/live"
-      8:
-        name: "WMOT 89.5 Middle Tennessee"
-        type: stream
-        url: "https://26443.live.streamtheworld.com/WMOTFM.mp3"
-      9:
-        name: "KBOO Portland OR"
-        type: stream
-        url: "https://live.kboo.fm:8443/high"
-      10:
-        name: "KMPG Portland ME"
-        type: stream
-        url: "https://stream.pacificaservice.org:9000/wmpg"
-      11:
-        name: "KFFP Portland"
-        type: stream
-        url: "http://listen.freeformportland.org:8000/stream"
-      12:
-        name: "KXRY Portland"
-        type: stream
-        url: "https://listen.xray.fm/stream"
-  4:
     name: "College Radio"
     stations:
       0:
@@ -282,7 +223,7 @@ banks:
         name: "KWVA Oregon"
         type: stream
         url: "http://kwvaradio.uoregon.edu:8000/stream/1/"
-  5:
+  4:
     name: "Global"
     stations:
       0:
@@ -365,101 +306,50 @@ banks:
         name: "Yabiladi Casablanca Morocco"
         type: stream
         url: "https://radio.yabiladi.com:9002/;stream.mp3"
+  5:
+    name: "Jazz"
+    stations:
+      0:
+        name: "WWOZ New Orleans"
+        type: stream
+        url: "http://wwoz-sc.streamguys1.com/wwoz-hi.mp3"
+      1:
+        name: "WBGO Jazz 88 Newark"
+        type: stream
+        url: "https://ais-sa8.cdnstream1.com/3629_64.aac"
+      2:
+        name: "WDCB"
+        type: stream
+        url: "https://wdcb-ice.streamguys1.com/mobile-AAC"
+      3:
+        name: "KMHD"
+        type: stream
+        url: "https://ais-sa3.cdnstream1.com/2442_128.aac/playlist.m3u8"
+      4:
+        name: "KCSM"
+        type: stream
+        url: "https://ice7.securenetsystems.net/KCSM2"
+      5:
+        name: "WPFW"
+        type: stream
+        url: "https://streams.pacifica.org:9000/wpfw_128"
+      6:
+        name: "KUVO"
+        type: stream
+        url: "https://kuvo.streamguys1.com/kuvo-aac-128"
+      7:
+        name: "CJRT 91.1 Jazz FM"
+        type: stream
+        url: "https://hil-streamb1-ais-relay1.streamb.live/SB00009/playlist.m3u8"
+      8:
+        name: "Jazz 88.3 San Diego"
+        type: stream
+        url: "https://ksds-ice.streamguys1.com/ksds.mp3"
+      9:
+        name: "Czech Jazz"
+        type: stream
+        url: "https://rozhlas.stream/jazz_high.aac"
   6:
-    name: "BBC"
-    stations:
-      0:
-        name: "BBC Radio One"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_01505109/live/ww/bbc_radio_one/bbc_radio_one.isml/bbc_radio_one-audio%3d128000.norewind.m3u8"
-      1:
-        name: "BBC Radio One Dance"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_62063831/live/ww/bbc_radio_one_dance/bbc_radio_one_dance.isml/bbc_radio_one_dance-audio%3d320000.norewind.m3u8"
-      2:
-        name: "BBC 1xtra"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_92079267/live/ww/bbc_1xtra/bbc_1xtra.isml/bbc_1xtra-audio%3d320000.norewind.m3u8"
-      3:
-        name: "BBC Radio Two"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_74208725/live/ww/bbc_radio_two/bbc_radio_two.isml/bbc_radio_two-audio%3d128000.norewind.m3u8"
-      4:
-        name: "BBC Radio Three"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_23461179/live/ww/bbc_radio_three/bbc_radio_three.isml/bbc_radio_three-audio%3d128000.norewind.m3u8"
-      5:
-        name: "BBC Radio Four"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_55057080/live/ww/bbc_radio_fourfm/bbc_radio_fourfm.isml/bbc_radio_fourfm-audio%3d128000.norewind.m3u8"
-      6:
-        name: "BBC Radio Five Live"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_89021708/live/ww/bbc_radio_five_live/bbc_radio_five_live.isml/bbc_radio_five_live-audio%3d128000.norewind.m3u8"
-      7:
-        name: "BBC Radio Six Music"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_81827798/live/ww/bbc_6music/bbc_6music.isml/bbc_6music-audio%3d128000.norewind.m3u8"
-      8:
-        name: "BBC Radio Scotland"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_43322914/live/ww/bbc_radio_scotland_fm/bbc_radio_scotland_fm.isml/bbc_radio_scotland_fm-audio%3d128000.norewind.m3u8"
-      9:
-        name: "BBC Radio Wales"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_97517794/live/ww/bbc_radio_wales_fm/bbc_radio_wales_fm.isml/bbc_radio_wales_fm-audio%3d128000.norewind.m3u8"
-      10:
-        name: "BBC Radio World Service"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_87948813/live/ww/bbc_world_service/bbc_world_service.isml/bbc_world_service-audio%3d128000.norewind.m3u8"
-      11:
-        name: "BBC Radio Three Unwind"
-        type: stream
-        url: "http://as-hls-ww-live.akamaized.net/pool_30624046/live/ww/bbc_radio_three_unwind/bbc_radio_three_unwind.isml/bbc_radio_three_unwind-audio%3d128000.norewind.m3u8"
-  7:
-    name: "Ambient"
-    stations:
-      0:
-        name: "Mission Control - Soma FM"
-        type: stream
-        url: "https://ice5.somafm.com/missioncontrol-128-aac"
-      1:
-        name: "Drone Zone - Soma FM"
-        type: stream
-        url: "https://ice5.somafm.com/dronezone-128-aac"
-      2:
-        name: "Space Station Soma FM"
-        type: stream
-        url: "https://ice5.somafm.com/spacestation-128-aac"
-      3:
-        name: "DEF CON Radio Soma FM"
-        type: stream
-        url: "https://ice5.somafm.com/defcon-128-aac"
-      4:
-        name: "Dark Zone Soma FM"
-        type: stream
-        url: "https://ice5.somafm.com/darkzone-128-aac"
-      5:
-        name: "Vaporwaves Soma FM"
-        type: stream
-        url: "https://ice5.somafm.com/vaporwaves-128-aac"
-      6:
-        name: "Soma FM Specials"
-        type: stream
-        url: "https://ice5.somafm.com/specials-128-aac"
-      7:
-        name: "9128.live"
-        type: stream
-        url: "https://streams.radio.co/s0aa1e6f4a/listen"
-      8:
-        name: "Moon Phase Radio Hertford UK"
-        type: stream
-        url: "https://cp12.serverse.com/proxy/moonphase/stream"
-      9:
-        name: "Morong Community Radio Philippines"
-        type: stream
-        url: "https://broadcast.shoutcheap.com/proxy/morong/stream"
-  8:
     name: "Nicaragua"
     stations:
       0:
@@ -498,3 +388,113 @@ banks:
         name: "Radio Juan Pablo Segundo"
         type: stream
         url: "https://dc2.serverse.com:8040/stream"
+  7:
+    name: "NYC"
+    stations:
+      0:
+        name: "WNYC 93.9 FM (NPR)"
+        type: stream
+        url: "https://fm939.wnyc.org/wnycfm.aac"
+      1:
+        name: "WQXR 105.9 Classical"
+        type: stream
+        url: "https://stream.wqxr.org/wqxr.aac"
+      2:
+        name: "1010 WINS 92.3 FM (News)"
+        type: stream
+        url: "https://live.amperwave.net/direct/audacy-winsamaac-imc"
+      3:
+        name: "WFAN 660 AM / 101.9 FM (Sports)"
+        type: stream
+        url: "https://live.amperwave.net/direct/audacy-wfanamaac-imc"
+      4:
+        name: "WCBS-FM 101.1 (Classic Hits)"
+        type: stream
+        url: "https://live.amperwave.net/direct/audacy-wcbsfmaac-imc"
+      5:
+        name: "New 102.7 WNEW (Hot AC)"
+        type: stream
+        url: "https://live.amperwave.net/direct/audacy-wnewfmaac-imc"
+      6:
+        name: "94.7 The Block WXBK (Throwbacks)"
+        type: stream
+        url: "https://live.amperwave.net/direct/audacy-wxbkfmaac-imc"
+      7:
+        name: "Z100 WHTZ 100.3 (Top 40)"
+        type: stream
+        url: "http://stream.revma.ihrhls.com/zc1469"
+      8:
+        name: "106.7 Lite FM WLTW (AC)"
+        type: stream
+        url: "http://stream.revma.ihrhls.com/zc1477"
+      9:
+        name: "Q104.3 WAXQ (Classic Rock)"
+        type: stream
+        url: "http://stream.revma.ihrhls.com/zc1465"
+      10:
+        name: "Power 105.1 WWPR (Hip-Hop)"
+        type: stream
+        url: "http://stream.revma.ihrhls.com/zc1481"
+      11:
+        name: "103.5 KTU WKTU (Rhythmic AC)"
+        type: stream
+        url: "http://stream.revma.ihrhls.com/zc1473"
+      12:
+        name: "WOR 710 AM (Talk)"
+        type: stream
+        url: "http://stream.revma.ihrhls.com/zc5874"
+  8:
+    name: "U.S."
+    stations:
+      0:
+        name: "WFMU 91.1 Hudson Valley"
+        type: stream
+        url: "https://stream0.wfmu.org/freeform-128k.mp3"
+      1:
+        name: "WPKN Bridgeport CT 89.5"
+        type: stream
+        url: "https://ice25.securenetsystems.net/WPKN"
+      2:
+        name: "KEXP Seattle 90.3 FM"
+        type: stream
+        url: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3"
+      3:
+        name: "KABF Little Rock"
+        type: stream
+        url: "https://cast.acornradio.org/kabf"
+      4:
+        name: "SoCal Sound 88.5 FM"
+        type: stream
+        url: "https://www.streamvortex.com:8444/s/12200/"
+      5:
+        name: "Hot 97 NYC"
+        type: stream
+        url: "https://27253.live.streamtheworld.com/WQHTFMAAC.aac"
+      6:
+        name: "Iowa Public Radio"
+        type: stream
+        url: "https://studioone-stream.iowapublicradio.org/StudioOne.mp3"
+      7:
+        name: "WDVX 89.9 Knoxville"
+        type: stream
+        url: "https://wdvx.streamguys1.com/live"
+      8:
+        name: "WMOT 89.5 Middle Tennessee"
+        type: stream
+        url: "https://26443.live.streamtheworld.com/WMOTFM.mp3"
+      9:
+        name: "KBOO Portland OR"
+        type: stream
+        url: "https://live.kboo.fm:8443/high"
+      10:
+        name: "KMPG Portland ME"
+        type: stream
+        url: "https://stream.pacificaservice.org:9000/wmpg"
+      11:
+        name: "KFFP Portland"
+        type: stream
+        url: "http://listen.freeformportland.org:8000/stream"
+      12:
+        name: "KXRY Portland"
+        type: stream
+        url: "https://listen.xray.fm/stream"

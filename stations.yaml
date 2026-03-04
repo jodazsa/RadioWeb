@@ -498,3 +498,7 @@ banks:
         name: "KXRY Portland"
         type: stream
         url: "https://listen.xray.fm/stream"
+      13:
+        name: "KQSM Fayetteville AR"
+        type: stream
+        url: ""
