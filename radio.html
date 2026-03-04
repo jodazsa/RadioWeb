@@ -652,7 +652,7 @@
         
         <div class="controls-row">
             <button class="control-button" id="playBtn" onclick="sendCommand('mpc play')" title="Play">▶</button>
-            <button class="control-button" id="pauseBtn" onclick="sendCommand('mpc pause')" title="Pause">❚❚</button>
+            <button class="control-button danger" id="stopBtn" onclick="sendCommand('mpc stop')" title="Stop">■</button>
         </div>
         
         <div class="tuner-section">
@@ -1293,10 +1293,7 @@
 
         function updatePlaybackButtonHighlights(isPlaying, isPaused) {
             const playBtn = document.getElementById('playBtn');
-            const pauseBtn = document.getElementById('pauseBtn');
-
             playBtn.classList.toggle('active-state', Boolean(isPlaying));
-            pauseBtn.classList.toggle('active-state', Boolean(isPaused));
         }
         
         function fetchRadioState() {

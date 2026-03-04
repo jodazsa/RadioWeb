@@ -320,7 +320,6 @@
 
         <div class="controls-row">
             <button class="control-button" id="playBtn" onclick="resumePlay()" title="Play">▶</button>
-            <button class="control-button" id="pauseBtn" onclick="pauseStation()" title="Pause">❚❚</button>
             <button class="control-button danger" id="stopBtn" onclick="stopStation()" title="Stop">■</button>
         </div>
 
@@ -670,16 +669,6 @@
             }
         }
 
-        function pauseStation() {
-            audio.pause();
-            isPlaying = false;
-            isPaused  = true;
-            updateDisplay('PAUSED');
-            updateStatus('', 'normal');
-            setIndicator('connected', 'PAUSED');
-            updatePlayButtons();
-        }
-
         function stopStation() {
             audio.pause();
             destroyHlsPlayer();
@@ -702,7 +691,7 @@
                 album:  'Radio'
             });
             navigator.mediaSession.setActionHandler('play',  () => resumePlay());
-            navigator.mediaSession.setActionHandler('pause', () => pauseStation());
+            navigator.mediaSession.setActionHandler('pause', () => stopStation());
             navigator.mediaSession.setActionHandler('stop',  () => stopStation());
         }
 
@@ -723,7 +712,6 @@
 
         function updatePlayButtons() {
             document.getElementById('playBtn').classList.toggle('active-state',  isPlaying);
-            document.getElementById('pauseBtn').classList.toggle('active-state', isPaused);
         }
 
         // Scrolling display text (matches radio.html behaviour)

@@ -457,7 +457,7 @@ banks:
       2:
         name: "KEXP Seattle 90.3 FM"
         type: stream
-        url: "https://kexp-mp3-128.streamguys1.com/kexp128.mp3"
+        url: "https://kexp.streamguys1.com/kexp160.aac"
       3:
         name: "KABF Little Rock"
         type: stream
