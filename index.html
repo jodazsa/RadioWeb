@@ -372,6 +372,7 @@
         let banks = [];
         let currentBankIdx = 0;
         let currentStation = null; // { name, url }
+        let currentStationBankName = '';
         let isPlaying = false;
         let isPaused  = false;
         let hlsPlayer = null;
@@ -663,7 +664,7 @@
                     btn.appendChild(num);
                     btn.appendChild(name);
                     btn.appendChild(removeFav);
-                    btn.addEventListener('click', () => playFavoriteStation(station));
+                    btn.addEventListener('click', () => playStation(station));
                     listEl.appendChild(btn);
                 });
                 return;
@@ -739,49 +740,25 @@
             audio.src = url;
         }
 
-        function playFavoriteStation(station) {
-            currentStation = station;
-
-            document.getElementById('stationInfo').textContent =
-                'FAVORITES  \u00b7  ' + station.name.toUpperCase();
-            updateDisplay(station.name.toUpperCase());
-            updateStatus('CONNECTING...', 'pending');
-            setIndicator('', 'CONNECTING');
-
-            renderStations();
-
-            audio.pause();
-            setAudioSource(station.url);
-            audio.load();
-
-            const promise = audio.play();
-            if (promise !== undefined) {
-                promise.catch(err => {
-                    updateStatus('TAP PLAY TO START', 'pending');
-                    setIndicator('', 'READY');
-                    console.warn('Playback promise rejected:', err);
-                });
-            }
-
-            setupMediaSession(station.name, 'Favorites');
-            updateFavButton();
+        function getBankName() {
+            if (currentBankIdx === 0) return 'Favorites';
+            const bank = banks[currentBankIdx - 1];
+            return bank ? bank.name : '';
         }
 
         function playStation(station) {
-            const bank = banks[currentBankIdx - 1];
+            const bankName = getBankName();
             currentStation = station;
+            currentStationBankName = bankName;
 
-            // Update info row
             document.getElementById('stationInfo').textContent =
-                (bank ? bank.name.toUpperCase() : '') + '  \u00b7  ' + station.name.toUpperCase();
+                bankName.toUpperCase() + '  \u00b7  ' + station.name.toUpperCase();
             updateDisplay(station.name.toUpperCase());
             updateStatus('CONNECTING...', 'pending');
             setIndicator('', 'CONNECTING');
 
-            // Re-render so active button is highlighted correctly
             renderStations();
 
-            // Reset audio and load new source
             audio.pause();
             setAudioSource(station.url);
             audio.load();
@@ -789,15 +766,15 @@
             const promise = audio.play();
             if (promise !== undefined) {
                 promise.catch(err => {
-                    // iOS may require an additional tap; show a helpful message
                     updateStatus('TAP PLAY TO START', 'pending');
                     setIndicator('', 'READY');
                     console.warn('Playback promise rejected:', err);
                 });
             }
 
-            setupMediaSession(station.name, bank ? bank.name : '');
+            setupMediaSession(station.name, bankName);
             updateFavButton();
+            saveLastStation();
         }
 
         function resumePlay() {
@@ -874,7 +851,10 @@
             if (scrollFrame) { cancelAnimationFrame(scrollFrame); scrollFrame = null; }
 
             if (text.length > 20) {
-                el.innerHTML = '<span>' + text + '</span>';
+                el.textContent = '';
+                const span = document.createElement('span');
+                span.textContent = text;
+                el.appendChild(span);
                 el.classList.add('scrolling');
 
                 requestAnimationFrame(() => {
@@ -884,17 +864,29 @@
                     const dist = span.scrollWidth - el.clientWidth;
                     if (dist <= 0) { el.classList.remove('scrolling'); el.textContent = text; return; }
 
-                    const pps = 68, pauseMs = 1000;
+                    const pps = 68, pauseMs = 1500;
                     const moveDur  = (dist / pps) * 1000;
-                    const cycleDur = moveDur + pauseMs;
+                    const cycleDur = moveDur + pauseMs + moveDur + pauseMs;
                     const start    = performance.now();
 
                     function step(now) {
                         if (thisRun !== scrollRunId) { scrollFrame = null; return; }
                         const t = (now - start) % cycleDur;
-                        span.style.transform = t <= moveDur
-                            ? 'translateX(-' + (dist * (t / moveDur)) + 'px)'
-                            : 'translateX(-' + dist + 'px)';
+                        let offset;
+                        if (t <= moveDur) {
+                            // Scroll left
+                            offset = dist * (t / moveDur);
+                        } else if (t <= moveDur + pauseMs) {
+                            // Pause at end
+                            offset = dist;
+                        } else if (t <= moveDur + pauseMs + moveDur) {
+                            // Scroll back right
+                            offset = dist * (1 - (t - moveDur - pauseMs) / moveDur);
+                        } else {
+                            // Pause at start
+                            offset = 0;
+                        }
+                        span.style.transform = 'translateX(-' + offset + 'px)';
                         scrollFrame = requestAnimationFrame(step);
                     }
                     scrollFrame = requestAnimationFrame(step);
@@ -905,8 +897,34 @@
             }
         }
 
+        // ── Remember last station ───────────────────────────────────────
+        function saveLastStation() {
+            if (!currentStation) return;
+            localStorage.setItem('radioLastStation', JSON.stringify({
+                name: currentStation.name,
+                url: currentStation.url,
+                bankName: currentStationBankName
+            }));
+        }
+
+        function restoreLastStation() {
+            try {
+                const saved = localStorage.getItem('radioLastStation');
+                if (!saved) return;
+                const data = JSON.parse(saved);
+                if (!data.url) return;
+                currentStation = { name: data.name, url: data.url };
+                currentStationBankName = data.bankName || '';
+                document.getElementById('stationInfo').textContent =
+                    (data.bankName || '').toUpperCase() + '  \u00b7  ' + data.name.toUpperCase();
+                updateDisplay(data.name.toUpperCase());
+                updateFavButton();
+                renderStations();
+            } catch (e) { /* ignore */ }
+        }
+
         // ── Boot ─────────────────────────────────────────────────────────────
-        loadStations();
+        loadStations().then(() => restoreLastStation());
     </script>
 </body>
 </html>
