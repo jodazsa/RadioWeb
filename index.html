@@ -167,6 +167,23 @@
         .control-button.danger      { color: #ff5c5c; border-color: #663333; }
         .control-button.danger:hover:not(:disabled) { background: #3a2020; }
 
+        .control-button.favorite       { color: #999; border-color: #444; font-size: 20px; }
+        .control-button.favorite:hover:not(:disabled) { background: #303030; }
+        .control-button.favorite.is-favorite { color: #ff5c5c; border-color: #663333; }
+
+        .station-button .remove-fav {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .station-button .remove-fav:hover { color: #ff5c5c; }
+
         /* ── Banks ── */
         .section-label {
             color: #888;
@@ -321,6 +338,7 @@
         <div class="controls-row">
             <button class="control-button" id="playBtn" onclick="resumePlay()" title="Play">▶</button>
             <button class="control-button danger" id="stopBtn" onclick="stopStation()" title="Stop">■</button>
+            <button class="control-button favorite" id="favBtn" onclick="toggleFavorite()" title="Add to Favorites">&#9829;</button>
         </div>
 
         <div class="banks-section">
@@ -357,6 +375,53 @@
         let isPlaying = false;
         let isPaused  = false;
         let hlsPlayer = null;
+
+        // ── Favorites ──────────────────────────────────────────────────────
+        let favorites = []; // [{ name, url }]
+
+        function loadFavorites() {
+            try {
+                const saved = localStorage.getItem('radioFavorites');
+                if (saved) favorites = JSON.parse(saved);
+            } catch (e) { favorites = []; }
+        }
+
+        function saveFavorites() {
+            localStorage.setItem('radioFavorites', JSON.stringify(favorites));
+        }
+
+        function isFavorite(url) {
+            return favorites.some(f => f.url === url);
+        }
+
+        function toggleFavorite() {
+            if (!currentStation) return;
+            const idx = favorites.findIndex(f => f.url === currentStation.url);
+            if (idx >= 0) {
+                favorites.splice(idx, 1);
+                updateStatus('REMOVED FROM FAVORITES', 'normal');
+            } else {
+                favorites.push({ name: currentStation.name, url: currentStation.url });
+                updateStatus('ADDED TO FAVORITES', 'success');
+            }
+            saveFavorites();
+            updateFavButton();
+            // Re-render favorites bank content if currently viewing it
+            if (currentBankIdx === 0) renderStations();
+        }
+
+        function updateFavButton() {
+            const btn = document.getElementById('favBtn');
+            if (currentStation && isFavorite(currentStation.url)) {
+                btn.classList.add('is-favorite');
+                btn.title = 'Remove from Favorites';
+            } else {
+                btn.classList.remove('is-favorite');
+                btn.title = 'Add to Favorites';
+            }
+        }
+
+        loadFavorites();
 
         // ── Audio element ────────────────────────────────────────────────────
         const audio = document.getElementById('audioPlayer');
@@ -516,7 +581,7 @@
                 }
 
                 renderBankTabs();
-                selectBank(0);
+                selectBank(0); // Start on Favorites
                 setIndicator('', 'READY');
             } catch (err) {
                 setIndicator('disconnected', 'LOAD ERROR');
@@ -531,12 +596,21 @@
         function renderBankTabs() {
             const el = document.getElementById('banksTabs');
             el.innerHTML = '';
+
+            // Favorites is always the first tab (index 0)
+            const favTab = document.createElement('button');
+            favTab.className = 'bank-tab';
+            favTab.textContent = 'Favorites';
+            favTab.id = 'bank-tab-0';
+            favTab.addEventListener('click', () => selectBank(0));
+            el.appendChild(favTab);
+
             banks.forEach((bank, i) => {
                 const btn = document.createElement('button');
                 btn.className = 'bank-tab';
                 btn.textContent = bank.name;
-                btn.id = 'bank-tab-' + i;
-                btn.addEventListener('click', () => selectBank(i));
+                btn.id = 'bank-tab-' + (i + 1);
+                btn.addEventListener('click', () => selectBank(i + 1));
                 el.appendChild(btn);
             });
         }
@@ -552,9 +626,51 @@
         }
 
         function renderStations() {
-            const bank = banks[currentBankIdx];
             const listEl = document.getElementById('stationsList');
             listEl.innerHTML = '';
+
+            // Index 0 is the Favorites bank
+            if (currentBankIdx === 0) {
+                if (favorites.length === 0) {
+                    listEl.innerHTML = '<div class="no-stations">No favorites yet</div>';
+                    return;
+                }
+                favorites.forEach((station, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = 'station-button';
+                    if (currentStation && currentStation.url === station.url) btn.classList.add('active');
+
+                    const num = document.createElement('span');
+                    num.className = 'station-num';
+                    num.textContent = i + 1;
+
+                    const name = document.createElement('span');
+                    name.className = 'station-name';
+                    name.textContent = station.name;
+
+                    const removeFav = document.createElement('button');
+                    removeFav.className = 'remove-fav';
+                    removeFav.textContent = '\u2715';
+                    removeFav.title = 'Remove from Favorites';
+                    removeFav.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        favorites.splice(i, 1);
+                        saveFavorites();
+                        updateFavButton();
+                        renderStations();
+                    });
+
+                    btn.appendChild(num);
+                    btn.appendChild(name);
+                    btn.appendChild(removeFav);
+                    btn.addEventListener('click', () => playFavoriteStation(station));
+                    listEl.appendChild(btn);
+                });
+                return;
+            }
+
+            // Real banks are offset by 1
+            const bank = banks[currentBankIdx - 1];
 
             if (!bank || bank.stations.length === 0) {
                 listEl.innerHTML = '<div class="no-stations">No stream stations</div>';
@@ -623,8 +739,36 @@
             audio.src = url;
         }
 
+        function playFavoriteStation(station) {
+            currentStation = station;
+
+            document.getElementById('stationInfo').textContent =
+                'FAVORITES  \u00b7  ' + station.name.toUpperCase();
+            updateDisplay(station.name.toUpperCase());
+            updateStatus('CONNECTING...', 'pending');
+            setIndicator('', 'CONNECTING');
+
+            renderStations();
+
+            audio.pause();
+            setAudioSource(station.url);
+            audio.load();
+
+            const promise = audio.play();
+            if (promise !== undefined) {
+                promise.catch(err => {
+                    updateStatus('TAP PLAY TO START', 'pending');
+                    setIndicator('', 'READY');
+                    console.warn('Playback promise rejected:', err);
+                });
+            }
+
+            setupMediaSession(station.name, 'Favorites');
+            updateFavButton();
+        }
+
         function playStation(station) {
-            const bank = banks[currentBankIdx];
+            const bank = banks[currentBankIdx - 1];
             currentStation = station;
 
             // Update info row
@@ -653,6 +797,7 @@
             }
 
             setupMediaSession(station.name, bank ? bank.name : '');
+            updateFavButton();
         }
 
         function resumePlay() {
