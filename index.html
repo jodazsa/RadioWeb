@@ -184,6 +184,53 @@
         }
         .station-button .remove-fav:hover { color: #ff5c5c; }
 
+        /* ── Volume ── */
+        .volume-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .volume-label {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            color: #666;
+            letter-spacing: 2px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .volume-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            outline: none;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            background: #ff8c00;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #1a1a1a;
+        }
+
+        .volume-slider::-moz-range-thumb {
+            width: 18px;
+            height: 18px;
+            background: #ff8c00;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid #1a1a1a;
+        }
+
         /* ── Banks ── */
         .section-label {
             color: #888;
@@ -341,6 +388,11 @@
             <button class="control-button favorite" id="favBtn" onclick="toggleFavorite()" title="Add to Favorites">&#9829;</button>
         </div>
 
+        <div class="volume-row">
+            <span class="volume-label">VOL</span>
+            <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+
         <div class="banks-section">
             <div class="section-label">Banks</div>
             <div class="banks-tabs" id="banksTabs">
@@ -372,6 +424,7 @@
         let banks = [];
         let currentBankIdx = 0;
         let currentStation = null; // { name, url }
+        let currentStationBankName = '';
         let isPlaying = false;
         let isPaused  = false;
         let hlsPlayer = null;
@@ -663,7 +716,7 @@
                     btn.appendChild(num);
                     btn.appendChild(name);
                     btn.appendChild(removeFav);
-                    btn.addEventListener('click', () => playFavoriteStation(station));
+                    btn.addEventListener('click', () => playStation(station));
                     listEl.appendChild(btn);
                 });
                 return;
@@ -739,49 +792,25 @@
             audio.src = url;
         }
 
-        function playFavoriteStation(station) {
-            currentStation = station;
-
-            document.getElementById('stationInfo').textContent =
-                'FAVORITES  \u00b7  ' + station.name.toUpperCase();
-            updateDisplay(station.name.toUpperCase());
-            updateStatus('CONNECTING...', 'pending');
-            setIndicator('', 'CONNECTING');
-
-            renderStations();
-
-            audio.pause();
-            setAudioSource(station.url);
-            audio.load();
-
-            const promise = audio.play();
-            if (promise !== undefined) {
-                promise.catch(err => {
-                    updateStatus('TAP PLAY TO START', 'pending');
-                    setIndicator('', 'READY');
-                    console.warn('Playback promise rejected:', err);
-                });
-            }
-
-            setupMediaSession(station.name, 'Favorites');
-            updateFavButton();
+        function getBankName() {
+            if (currentBankIdx === 0) return 'Favorites';
+            const bank = banks[currentBankIdx - 1];
+            return bank ? bank.name : '';
         }
 
         function playStation(station) {
-            const bank = banks[currentBankIdx - 1];
+            const bankName = getBankName();
             currentStation = station;
+            currentStationBankName = bankName;
 
-            // Update info row
             document.getElementById('stationInfo').textContent =
-                (bank ? bank.name.toUpperCase() : '') + '  \u00b7  ' + station.name.toUpperCase();
+                bankName.toUpperCase() + '  \u00b7  ' + station.name.toUpperCase();
             updateDisplay(station.name.toUpperCase());
             updateStatus('CONNECTING...', 'pending');
             setIndicator('', 'CONNECTING');
 
-            // Re-render so active button is highlighted correctly
             renderStations();
 
-            // Reset audio and load new source
             audio.pause();
             setAudioSource(station.url);
             audio.load();
@@ -789,15 +818,15 @@
             const promise = audio.play();
             if (promise !== undefined) {
                 promise.catch(err => {
-                    // iOS may require an additional tap; show a helpful message
                     updateStatus('TAP PLAY TO START', 'pending');
                     setIndicator('', 'READY');
                     console.warn('Playback promise rejected:', err);
                 });
             }
 
-            setupMediaSession(station.name, bank ? bank.name : '');
+            setupMediaSession(station.name, bankName);
             updateFavButton();
+            saveLastStation();
         }
 
         function resumePlay() {
@@ -874,7 +903,10 @@
             if (scrollFrame) { cancelAnimationFrame(scrollFrame); scrollFrame = null; }
 
             if (text.length > 20) {
-                el.innerHTML = '<span>' + text + '</span>';
+                el.textContent = '';
+                const span = document.createElement('span');
+                span.textContent = text;
+                el.appendChild(span);
                 el.classList.add('scrolling');
 
                 requestAnimationFrame(() => {
@@ -884,17 +916,29 @@
                     const dist = span.scrollWidth - el.clientWidth;
                     if (dist <= 0) { el.classList.remove('scrolling'); el.textContent = text; return; }
 
-                    const pps = 68, pauseMs = 1000;
+                    const pps = 68, pauseMs = 1500;
                     const moveDur  = (dist / pps) * 1000;
-                    const cycleDur = moveDur + pauseMs;
+                    const cycleDur = moveDur + pauseMs + moveDur + pauseMs;
                     const start    = performance.now();
 
                     function step(now) {
                         if (thisRun !== scrollRunId) { scrollFrame = null; return; }
                         const t = (now - start) % cycleDur;
-                        span.style.transform = t <= moveDur
-                            ? 'translateX(-' + (dist * (t / moveDur)) + 'px)'
-                            : 'translateX(-' + dist + 'px)';
+                        let offset;
+                        if (t <= moveDur) {
+                            // Scroll left
+                            offset = dist * (t / moveDur);
+                        } else if (t <= moveDur + pauseMs) {
+                            // Pause at end
+                            offset = dist;
+                        } else if (t <= moveDur + pauseMs + moveDur) {
+                            // Scroll back right
+                            offset = dist * (1 - (t - moveDur - pauseMs) / moveDur);
+                        } else {
+                            // Pause at start
+                            offset = 0;
+                        }
+                        span.style.transform = 'translateX(-' + offset + 'px)';
                         scrollFrame = requestAnimationFrame(step);
                     }
                     scrollFrame = requestAnimationFrame(step);
@@ -905,8 +949,60 @@
             }
         }
 
+        // ── Keyboard shortcuts ───────────────────────────────────────────
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+            if (e.code === 'Space') {
+                e.preventDefault();
+                if (isPlaying) stopStation();
+                else resumePlay();
+            } else if (e.code === 'Escape') {
+                stopStation();
+            }
+        });
+
+        // ── Remember last station ───────────────────────────────────────
+        function saveLastStation() {
+            if (!currentStation) return;
+            localStorage.setItem('radioLastStation', JSON.stringify({
+                name: currentStation.name,
+                url: currentStation.url,
+                bankName: currentStationBankName
+            }));
+        }
+
+        function restoreLastStation() {
+            try {
+                const saved = localStorage.getItem('radioLastStation');
+                if (!saved) return;
+                const data = JSON.parse(saved);
+                if (!data.url) return;
+                currentStation = { name: data.name, url: data.url };
+                currentStationBankName = data.bankName || '';
+                document.getElementById('stationInfo').textContent =
+                    (data.bankName || '').toUpperCase() + '  \u00b7  ' + data.name.toUpperCase();
+                updateDisplay(data.name.toUpperCase());
+                updateFavButton();
+                renderStations();
+            } catch (e) { /* ignore */ }
+        }
+
+        // ── Volume control ──────────────────────────────────────────────
+        function initVolume() {
+            const saved = localStorage.getItem('radioVolume');
+            if (saved !== null) audio.volume = parseFloat(saved);
+            const slider = document.getElementById('volumeSlider');
+            slider.value = audio.volume;
+            slider.addEventListener('input', (e) => {
+                audio.volume = parseFloat(e.target.value);
+                localStorage.setItem('radioVolume', e.target.value);
+            });
+        }
+        initVolume();
+
         // ── Boot ─────────────────────────────────────────────────────────────
-        loadStations();
+        loadStations().then(() => restoreLastStation());
     </script>
 </body>
 </html>
